@@ -68,3 +68,8 @@ La app te dice el **largo** de la clave cargada (nunca su contenido). Una clave 
 - **Menos o más de 32:** el valor está incompleto o con texto de más. Vuelve a copiarlo desde el portal, en *Settings → Secrets*, entre comillas y sin espacios.
 - **32 y sigue el 403:** revisa que no hayas cruzado las claves (`CEN_USER_KEY` es del servicio *Información Pública* y `CEN_OPERACION_KEY` del servicio *Operación*) o que la clave siga activa en el portal.
 - Después de corregir los Secrets, usa *Manage app → Reboot app*: tras un error, la app no reintenta durante unos minutos.
+
+## Guía del usuario y favicon
+
+- La pestaña **Guía** es un recorrido de 8 pasos: qué hay en cada parte del dashboard, cómo usarla y los límites de los datos del Coordinador (atrasos y fuentes que la API no entrega). La primera vez que alguien entra aparece un aviso con el botón «Hacer el recorrido». El contenido está en `cen/guia.py`.
+- El favicon (una lupa mirando un rayo) está en `assets/favicon.png`; se regenera con `python scripts/generar_favicon.py`.

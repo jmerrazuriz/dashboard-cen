@@ -4,9 +4,14 @@ Ejecutar:  .venv\\Scripts\\streamlit run app.py
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 import streamlit as st
 
-st.set_page_config(page_title="Dashboard SEN", layout="wide")
+# Favicon propio (lupa mirando un rayo); se regenera con scripts/generar_favicon.py
+_FAVICON = Path(__file__).parent / "assets" / "favicon.png"
+st.set_page_config(page_title="Dashboard SEN", layout="wide",
+                   page_icon=str(_FAVICON) if _FAVICON.exists() else None)
 
 # Oculta el indicador "Running" de Streamlit (silueta animada + botón Stop); va antes de los
 # imports pesados para que se aplique de inmediato. El progreso se ve en los mensajes "Consultando…".
@@ -23,6 +28,7 @@ from cen import transform as T  # noqa: E402
 from cen import charts as CH  # noqa: E402
 from cen.cache import SinCache, modo_solo_cache  # noqa: E402
 from cen.client import revisar_clave  # noqa: E402
+from cen import guia as G  # noqa: E402
 
 modo_solo_cache(False)  # cada ejecución parte consultando normalmente (ver precarga más abajo)
 from streamlit_echarts import st_echarts  # noqa: E402
@@ -299,6 +305,29 @@ if barras:
 # ============================================================== KPIs
 st.title("Sistema Eléctrico Nacional")
 
+
+def abrir_guia() -> None:
+    """Lleva a la pestaña Guía, en su primer paso, y oculta el aviso de bienvenida."""
+    st.session_state["guia_paso"] = 0
+    st.session_state["pestana"] = "Guía"
+    st.session_state["guia_aviso"] = False
+
+
+def cerrar_aviso_guia() -> None:
+    st.session_state["guia_aviso"] = False
+
+
+# Contenedor FIJO: si el aviso desaparece, los elementos de abajo no se corren de lugar (si se corrieran, las
+# pestañas se reiniciarían en el navegador y no abrirían «Guía» al pulsar el botón).
+_ranura_aviso = st.empty()
+if st.session_state.get("guia_aviso", True):
+    with _ranura_aviso.container(border=True):
+        ta, tb, tc = st.columns([6, 1.6, 1.2], vertical_alignment="center")
+        ta.markdown("**¿Primera vez aquí?** Haz un recorrido de un par de minutos: qué hay en cada pestaña, cómo "
+                    "usarla y qué límites tienen los datos del Coordinador Eléctrico Nacional.")
+        tb.button("Hacer el recorrido", on_click=abrir_guia, type="primary", width="stretch")
+        tc.button("Ahora no", on_click=cerrar_aviso_guia, width="stretch")
+
 kpis: list[tuple[str, str, str, str]] = []  # (título, valor, unidad, detalle)
 if not cmg.empty:
     ult_cmg = cmg["ts"].max()
@@ -471,7 +500,7 @@ NOTA_DEMANDA = ("Demanda nacional = generación bruta (`gen_bruta_mwh`), con ~10
                 "(~2–3 h de atraso), marcadas como **estimado**.")
 
 # ============================================================== pestañas
-PESTANAS = ["Resumen", "Baterías", "Costos marginales", "Generación por tecnología", "Demanda", "Operación"]
+PESTANAS = ["Resumen", "Baterías", "Costos marginales", "Generación por tecnología", "Demanda", "Operación", "Guía"]
 
 
 def ir_a(pestana: str) -> None:
@@ -492,7 +521,7 @@ st.markdown("""
 </style>""", unsafe_allow_html=True)
 
 # Pestañas con estado: "Resumen" por defecto; solo se dibuja la pestaña visible
-tab_res, tab_bat, tab_cmg, tab_gen, tab_dem, tab_op = st.tabs(PESTANAS, key="pestana", on_change="rerun")
+tab_res, tab_bat, tab_cmg, tab_gen, tab_dem, tab_op, tab_guia = st.tabs(PESTANAS, key="pestana", on_change="rerun")
 
 # ============================================================== Pestaña Resumen
 if tab_res.open:
@@ -1018,6 +1047,45 @@ if tab_op.open:
             st.caption(f"{len(act)} solicitudes (desconexiones e intervenciones; sin anuladas, borradores ni "
                        "rechazadas) que abarcan el día, creadas en los "
                        "30 días previos.")
+
+# ============================================================== Pestaña Guía
+def _mover_paso(delta: int) -> None:
+    st.session_state["guia_paso"] = max(0, min(len(G.PASOS) - 1, (st.session_state.get("guia_paso") or 0) + delta))
+
+
+if tab_guia.open:
+  with tab_guia:
+    st.session_state.setdefault("guia_paso", 0)
+    n_pasos = len(G.PASOS)
+    st.pills("Recorrido", options=list(range(n_pasos)), key="guia_paso", label_visibility="collapsed",
+             format_func=lambda k: f"{k + 1}. {G.PASOS[k]['corto']}")
+    i = min(max(st.session_state.get("guia_paso") or 0, 0), n_pasos - 1)  # pills permite desmarcar: se corrige
+    paso = G.PASOS[i]
+    st.progress((i + 1) / n_pasos, text=f"Paso {i + 1} de {n_pasos}")
+    st.header(paso["titulo"])
+    st.markdown(paso["que_hay"])
+
+    if paso["corto"] == "Datos y límites":  # el último paso trae tablas
+        tabla_html(pd.DataFrame(G.ATRASOS, columns=["Fuente", "Atraso observado", "Comentario"]), alto=460,
+                   anchos={"Fuente": "30%", "Atraso observado": "20%", "Comentario": "50%"})
+        st.markdown("**Lo que el CEN no entrega por su API** (probado):")
+        st.markdown("\n".join(f"- {x}" for x in G.NO_DISPONIBLE))
+
+    if paso["como_usar"].strip():
+        st.subheader("Cómo usarlo")
+        st.markdown(paso["como_usar"])
+    if paso["limites"].strip():
+        st.warning("**Límites de los datos del Coordinador**\n" + paso["limites"])
+
+    b1, b2, b3 = st.columns([1.2, 2, 1.2], vertical_alignment="center")
+    b1.button("← Anterior", on_click=_mover_paso, args=(-1,), disabled=i == 0, width="stretch")
+    if paso["pestana"]:
+        b2.button(f"Ir a «{paso['pestana']}»", on_click=ir_a, args=(paso["pestana"],), type="primary",
+                  width="stretch", key=f"guia_ir_{i}")
+    b3.button("Siguiente →", on_click=_mover_paso, args=(1,), disabled=i == n_pasos - 1, width="stretch")
+
+    with st.expander("Glosario"):
+        st.table(pd.DataFrame(G.GLOSARIO, columns=["Término", "Significado"]).set_index("Término"))
 
 # ============================================================== Pie de página
 st.divider()
