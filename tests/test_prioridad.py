@@ -72,3 +72,34 @@ def test_reserva_frena_las_descargas_de_fondo_pero_no_la_pagina():
         assert orden == ["pagina"]
     fondo.join(5)                               # al terminar la reserva, la de fondo sigue
     assert orden == ["pagina", "fondo"]
+
+
+class _Resp:
+    def __init__(self, code):
+        self.status_code = code
+
+
+def test_429_pausa_solo_ese_endpoint_y_no_lo_repite():
+    """Tras un 429 en A, una consulta a B pasa durante la pausa y nadie vuelve a consultar A antes de tiempo."""
+    cli = C.CENClient(user_key="0" * 32, min_interval=0.0)
+    llamadas: list[tuple[str, float]] = []
+    respuestas = {"a": [429, 200, 200]}
+    t0 = time.monotonic()
+
+    def get(url, params=None, timeout=None):
+        ruta = url.rsplit("/", 1)[1]
+        llamadas.append((ruta, time.monotonic() - t0))
+        return _Resp(respuestas[ruta].pop(0) if ruta in respuestas else 200)
+
+    cli.session.get = get
+    h1 = threading.Thread(target=cli.request, args=("a",))
+    h1.start(); time.sleep(0.1)
+    h2 = threading.Thread(target=cli.request, args=("a",))  # llega durante la pausa de A
+    h2.start(); time.sleep(0.1)
+    cli.request("b")                                      # B no espera la pausa de A
+    h1.join(20); h2.join(20)
+    rutas = [r for r, _ in llamadas]
+    assert rutas[:2] == ["a", "b"] and rutas.count("a") == 3
+    t_b = dict((r, t) for r, t in llamadas[:2])["b"]
+    assert t_b < 1.0                                      # B pasó al tiro
+    assert all(t >= 1.9 for r, t in llamadas[2:])         # A esperó la pausa (2 s) antes de volver

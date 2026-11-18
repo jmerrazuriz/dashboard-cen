@@ -198,6 +198,11 @@ class CENClient:
                     _EN_PAUSA.discard(threading.get_ident())
             pausa_propia = 0.0  # 5xx / red: solo esta consulta espera
             with self._lock:
+                if self._ruta_proxima.get(ruta, 0.0) > time.monotonic():
+                    # mientras esperaba turno, otra consulta a este endpoint recibió un 429: vuelve a esperar
+                    # (fuera de la cola) en vez de consultar y provocar otro 429
+                    attempt -= 1
+                    continue
                 wait = self.interval - (time.monotonic() - self._last_request)
                 if wait > 0:
                     time.sleep(wait)
