@@ -23,12 +23,44 @@ from datetime import date, datetime, timedelta  # noqa: E402
 
 import pandas as pd  # noqa: E402
 
+import importlib  # noqa: E402
+import sys  # noqa: E402
+import time  # noqa: E402
+
+# Módulos propios, en orden de dependencias (cada uno solo importa a los anteriores).
+_MODULOS_CEN = ("cen.client", "cen.cache", "cen.transform", "cen.charts", "cen.endpoints", "cen.guia")
+
+
+def _recargar_modulos_modificados() -> None:
+    """Al recibir un push, Streamlit Cloud vuelve a ejecutar app.py pero puede seguir usando la versión
+    anterior de los módulos de cen/ que ya tenía en memoria (y la app falla, p. ej. con AttributeError).
+    Se recarga cada módulo cuyo archivo cambió después de importarse, o que no tiene la marca de carga
+    (lo importó una versión anterior de esta app)."""
+    for nombre in _MODULOS_CEN:
+        m = sys.modules.get(nombre)
+        if m is None or not getattr(m, "__file__", None):
+            continue
+        try:
+            modificado = os.path.getmtime(m.__file__)
+        except OSError:
+            continue
+        if modificado > getattr(m, "_cargado_en", 0):
+            importlib.reload(m)
+            m._cargado_en = time.time()
+
+
+_recargar_modulos_modificados()
+
 from cen import endpoints as E  # noqa: E402
 from cen import transform as T  # noqa: E402
 from cen import charts as CH  # noqa: E402
 from cen.cache import SinCache, modo_solo_cache  # noqa: E402
 from cen.client import revisar_clave  # noqa: E402
 from cen import guia as G  # noqa: E402
+
+for _nombre in _MODULOS_CEN:  # marca de carga de los módulos recién importados (ver arriba)
+    if _nombre in sys.modules and not hasattr(sys.modules[_nombre], "_cargado_en"):
+        sys.modules[_nombre]._cargado_en = time.time()
 
 modo_solo_cache(False)  # cada ejecución parte consultando normalmente (ver precarga más abajo)
 from streamlit_echarts import st_echarts  # noqa: E402
