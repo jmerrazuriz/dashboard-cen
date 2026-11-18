@@ -1,0 +1,3301 @@
+{
+ "generado": "2026-11-18T10:20:54",
+ "fechas": {
+  "hoy": "2026-11-18",
+  "ayer": "2026-11-17",
+  "hace_7d": "2026-11-11"
+ },
+ "resultados": [
+  {
+   "servicio": "sip",
+   "path": "cmg-programado-pid/v4/findByDate",
+   "prioridad": "alta",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 10.5,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 48,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "llave_cmg",
+      "id_barra_info",
+      "nmb_barra_info",
+      "cmg_usd_mwh",
+      "fecha_hora",
+      "fecha_programa",
+      "hora_programa",
+      "fecha_hora_programa",
+      "zona",
+      "region"
+     ],
+     "ejemplo": {
+      "id": 26532706,
+      "llave_cmg": "AltoNorte110",
+      "id_barra_info": 1871,
+      "nmb_barra_info": "BA S/E ALTO NORTE 110KV BP",
+      "cmg_usd_mwh": 51.586678922686,
+      "fecha_hora": "2026-11-18 00:00:00",
+      "fecha_programa": "2026-11-16",
+      "hora_programa": 18,
+      "fecha_hora_programa": "2026-11-16",
+      "zona": "Norte",
+      "region": "Antofagasta"
+     },
+     "fecha_min": "2026-11-16",
+     "fecha_max": "2026-11-18 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.5,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 229,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "llave_cmg",
+      "id_barra_info",
+      "nmb_barra_info",
+      "cmg_usd_mwh",
+      "fecha_hora",
+      "fecha_programa",
+      "hora_programa",
+      "fecha_hora_programa",
+      "zona",
+      "region"
+     ],
+     "ejemplo": {
+      "id": 17767624,
+      "llave_cmg": "AltoNorte110",
+      "id_barra_info": 1871,
+      "nmb_barra_info": "BA S/E ALTO NORTE 110KV BP",
+      "cmg_usd_mwh": 49.3960739221304,
+      "fecha_hora": "2026-11-17 00:00:00",
+      "fecha_programa": "2026-11-15",
+      "hora_programa": 6,
+      "fecha_hora_programa": "2026-11-15",
+      "zona": "Norte",
+      "region": "Antofagasta"
+     },
+     "fecha_min": "2026-11-15",
+     "fecha_max": "2026-11-17 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.4,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 333,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "llave_cmg",
+      "id_barra_info",
+      "nmb_barra_info",
+      "cmg_usd_mwh",
+      "fecha_hora",
+      "fecha_programa",
+      "hora_programa",
+      "fecha_hora_programa",
+      "zona",
+      "region"
+     ],
+     "ejemplo": {
+      "id": 20853041,
+      "llave_cmg": "Antofagasta110",
+      "id_barra_info": 1887,
+      "nmb_barra_info": "BA S/E ANTOFAGASTA 110KV BP1",
+      "cmg_usd_mwh": 45.2679336969825,
+      "fecha_hora": "2026-11-11 00:00:00",
+      "fecha_programa": "2026-11-09",
+      "hora_programa": 10,
+      "fecha_hora_programa": "2026-11-09",
+      "zona": "Norte",
+      "region": "Antofagasta"
+     },
+     "fecha_min": "2026-11-09",
+     "fecha_max": "2026-11-11 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    }
+   },
+   "paginacion": {
+    "totalPages": 48,
+    "base": "desde 1",
+    "ultima_pagina": {
+     "page": 48,
+     "http": 200,
+     "n": 88,
+     "fecha_min": "2026-11-16",
+     "fecha_max": "2026-11-18 17:00:00"
+    }
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "pronostico-erv/v4/findByDate",
+   "prioridad": "alta",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 3.5,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 0.8,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 1.8,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null
+    }
+   },
+   "paginacion": {
+    "totalPages": 0,
+    "base": "una sola página"
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "pronosticos-demanda-corto-plazo/v4/findByDate",
+   "prioridad": "alta",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 3.4,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 34,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id_barra_info",
+      "barra",
+      "energia_mwh",
+      "fecha_hora",
+      "anio",
+      "mes",
+      "dia",
+      "hora",
+      "date_control"
+     ],
+     "ejemplo": {
+      "id_barra_info": null,
+      "barra": "LasVioletas066",
+      "energia_mwh": 9.78724384290937,
+      "fecha_hora": "2026-11-18 00:00:00",
+      "anio": 2026,
+      "mes": 11,
+      "dia": 18,
+      "hora": 1,
+      "date_control": "2026-11-18"
+     },
+     "fecha_min": "2026-11-18",
+     "fecha_max": "2026-11-18 00:00:00"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 1.7,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 34,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id_barra_info",
+      "barra",
+      "energia_mwh",
+      "fecha_hora",
+      "anio",
+      "mes",
+      "dia",
+      "hora",
+      "date_control"
+     ],
+     "ejemplo": {
+      "id_barra_info": 2326,
+      "barra": "ElNegro110",
+      "energia_mwh": 12.4503343751882,
+      "fecha_hora": "2026-11-17 00:00:00",
+      "anio": 2026,
+      "mes": 11,
+      "dia": 17,
+      "hora": 1,
+      "date_control": "2026-11-17"
+     },
+     "fecha_min": "2026-11-17",
+     "fecha_max": "2026-11-17 00:00:00"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 1.9,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 34,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id_barra_info",
+      "barra",
+      "energia_mwh",
+      "fecha_hora",
+      "anio",
+      "mes",
+      "dia",
+      "hora",
+      "date_control"
+     ],
+     "ejemplo": {
+      "id_barra_info": 2326,
+      "barra": "ElNegro110",
+      "energia_mwh": 12.00987963,
+      "fecha_hora": "2026-11-11 00:00:00",
+      "anio": 2026,
+      "mes": 11,
+      "dia": 11,
+      "hora": 1,
+      "date_control": "2026-11-11"
+     },
+     "fecha_min": "2026-11-11",
+     "fecha_max": "2026-11-11 00:00:00"
+    }
+   },
+   "paginacion": {
+    "totalPages": 34,
+    "base": "page=0 repite page=1: numeración desde 1",
+    "ultima_pagina": {
+     "page": 34,
+     "http": 200,
+     "n": 36,
+     "fecha_min": "2026-11-18",
+     "fecha_max": "2026-11-18 23:00:00"
+    }
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "pronosticos-demanda-mediano-plazo/v4/findByDate",
+   "prioridad": "alta",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 4.2,
+     "n": 48,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 1,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "tipo_proceso",
+      "fecha",
+      "energia_mwh",
+      "dia",
+      "hora",
+      "fecha_hora"
+     ],
+     "ejemplo": {
+      "tipo_proceso": "SING",
+      "fecha": "2026-11-18",
+      "energia_mwh": 2982.64101422588,
+      "dia": 1,
+      "hora": 1,
+      "fecha_hora": "2026-11-18 00:00:00"
+     },
+     "fecha_min": "2026-11-18",
+     "fecha_max": "2026-11-18 23:00:00"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 0.9,
+     "n": 48,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 1,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "tipo_proceso",
+      "fecha",
+      "energia_mwh",
+      "dia",
+      "hora",
+      "fecha_hora"
+     ],
+     "ejemplo": {
+      "tipo_proceso": "SING",
+      "fecha": "2026-11-17",
+      "energia_mwh": 2965.21450934967,
+      "dia": 1,
+      "hora": 1,
+      "fecha_hora": "2026-11-17 00:00:00"
+     },
+     "fecha_min": "2026-11-17",
+     "fecha_max": "2026-11-17 23:00:00"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.0,
+     "n": 48,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 1,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "tipo_proceso",
+      "fecha",
+      "energia_mwh",
+      "dia",
+      "hora",
+      "fecha_hora"
+     ],
+     "ejemplo": {
+      "tipo_proceso": "SING",
+      "fecha": "2026-11-11",
+      "energia_mwh": 2905.69381607484,
+      "dia": 1,
+      "hora": 1,
+      "fecha_hora": "2026-11-11 00:00:00"
+     },
+     "fecha_min": "2026-11-11",
+     "fecha_max": "2026-11-11 23:00:00"
+    }
+   },
+   "paginacion": {
+    "totalPages": 1,
+    "base": "una sola página"
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "limitaciones-transmision/v4/findByDate",
+   "prioridad": "media",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.5,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.2,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 1.9,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    }
+   },
+   "paginacion": {
+    "totalPages": 0,
+    "base": "una sola página"
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "flujo-programado-pcp/v4/findByDate",
+   "prioridad": "media",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 4.2,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 562,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "flujo_lineas",
+      "flujo_mw",
+      "llave_barra_a",
+      "id_barra_info_a",
+      "nmb_barra_info_a",
+      "llave_barra_b",
+      "id_barra_info_b",
+      "nmb_barra_info_b",
+      "fecha_hora",
+      "perdidas_mw",
+      "fecha_programa"
+     ],
+     "ejemplo": {
+      "id": 68789047,
+      "flujo_lineas": "Antofag110->Desalant110",
+      "flujo_mw": -3.23883018070062,
+      "llave_barra_a": "Antofag110",
+      "id_barra_info_a": 0,
+      "nmb_barra_info_a": "Pendiente",
+      "llave_barra_b": "Desalant110",
+      "id_barra_info_b": 2068,
+      "nmb_barra_info_b": "BA S/E DESALANT 110KV BP",
+      "fecha_hora": "2026-11-18 00:00:00",
+      "perdidas_mw": 0.001570252073623,
+      "fecha_programa": "2026-11-12"
+     },
+     "fecha_min": "2026-11-12",
+     "fecha_max": "2026-11-18 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.9,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 562,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "flujo_lineas",
+      "flujo_mw",
+      "llave_barra_a",
+      "id_barra_info_a",
+      "nmb_barra_info_a",
+      "llave_barra_b",
+      "id_barra_info_b",
+      "nmb_barra_info_b",
+      "fecha_hora",
+      "perdidas_mw",
+      "fecha_programa"
+     ],
+     "ejemplo": {
+      "id": 60764404,
+      "flujo_lineas": "AJahuel220->SantaMarta220",
+      "flujo_mw": 222.731799063851,
+      "llave_barra_a": "AJahuel220",
+      "id_barra_info_a": 457,
+      "nmb_barra_info_a": "BA S/E ALTO JAHUEL 220KV BP1",
+      "llave_barra_b": "SantaMarta220",
+      "id_barra_info_b": 1774,
+      "nmb_barra_info_b": "BA S/E CENTRAL SANTA MARTA 220KV BP1",
+      "fecha_hora": "2026-11-17 00:00:00",
+      "perdidas_mw": 0.782271660437379,
+      "fecha_programa": "2026-11-11"
+     },
+     "fecha_min": "2026-11-11",
+     "fecha_max": "2026-11-17 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 4.0,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 562,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "flujo_lineas",
+      "flujo_mw",
+      "llave_barra_a",
+      "id_barra_info_a",
+      "nmb_barra_info_a",
+      "llave_barra_b",
+      "id_barra_info_b",
+      "nmb_barra_info_b",
+      "fecha_hora",
+      "perdidas_mw",
+      "fecha_programa"
+     ],
+     "ejemplo": {
+      "id": 83492598,
+      "flujo_lineas": "AJahuel154->Paine154",
+      "flujo_mw": 56.115093558131,
+      "llave_barra_a": "AJahuel154",
+      "id_barra_info_a": 456,
+      "nmb_barra_info_a": "BA S/E ALTO JAHUEL 154KV BP",
+      "llave_barra_b": "Paine154",
+      "id_barra_info_b": 195,
+      "nmb_barra_info_b": "BA S/E PAINE 154KV BP1",
+      "fecha_hora": "2026-11-11 00:00:00",
+      "perdidas_mw": 0.192083127227305,
+      "fecha_programa": "2026-11-05"
+     },
+     "fecha_min": "2026-11-05",
+     "fecha_max": "2026-11-11 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    }
+   },
+   "paginacion": {
+    "totalPages": 562,
+    "base": "desde 1",
+    "ultima_pagina": {
+     "page": 562,
+     "http": 200,
+     "n": 12,
+     "fecha_min": "2026-11-18",
+     "fecha_max": "2026-11-18 23:00:00"
+    }
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "flujo-programado-pid/v4/findByDate",
+   "prioridad": "media",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 11.4,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 61,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "flujo_lineas",
+      "flujo_mw",
+      "llave_barra_a",
+      "id_barra_info_a",
+      "nmb_barra_info_a",
+      "llave_barra_b",
+      "id_barra_info_b",
+      "nmb_barra_info_b",
+      "fecha_hora",
+      "perdidas_mw",
+      "fecha_programa",
+      "hora_programa",
+      "fecha_hora_programa"
+     ],
+     "ejemplo": {
+      "id": 20894220,
+      "flujo_lineas": "AJahuel220->AJahuel154",
+      "flujo_mw": 69.2185870927453,
+      "llave_barra_a": "AJahuel220",
+      "id_barra_info_a": 457,
+      "nmb_barra_info_a": "BA S/E ALTO JAHUEL 220KV BP1",
+      "llave_barra_b": "AJahuel154",
+      "id_barra_info_b": 456,
+      "nmb_barra_info_b": "BA S/E ALTO JAHUEL 154KV BP",
+      "fecha_hora": "2026-11-18 00:00:00",
+      "perdidas_mw": 0.012101390907628,
+      "fecha_programa": "2026-11-16",
+      "hora_programa": 18,
+      "fecha_hora_programa": "2026-11-16"
+     },
+     "fecha_min": "2026-11-16",
+     "fecha_max": "2026-11-18 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 3.7,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 288,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "flujo_lineas",
+      "flujo_mw",
+      "llave_barra_a",
+      "id_barra_info_a",
+      "nmb_barra_info_a",
+      "llave_barra_b",
+      "id_barra_info_b",
+      "nmb_barra_info_b",
+      "fecha_hora",
+      "perdidas_mw",
+      "fecha_programa",
+      "hora_programa",
+      "fecha_hora_programa"
+     ],
+     "ejemplo": {
+      "id": 25188490,
+      "flujo_lineas": "AJahuel220->AJahuel154",
+      "flujo_mw": 77.2238909327754,
+      "llave_barra_a": "AJahuel220",
+      "id_barra_info_a": 457,
+      "nmb_barra_info_a": "BA S/E ALTO JAHUEL 220KV BP1",
+      "llave_barra_b": "AJahuel154",
+      "id_barra_info_b": 456,
+      "nmb_barra_info_b": "BA S/E ALTO JAHUEL 154KV BP",
+      "fecha_hora": "2026-11-17 00:00:00",
+      "perdidas_mw": 0.0126336563091012,
+      "fecha_programa": "2026-11-15",
+      "hora_programa": 6,
+      "fecha_hora_programa": "2026-11-15"
+     },
+     "fecha_min": "2026-11-15",
+     "fecha_max": "2026-11-17 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 4.2,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 418,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "flujo_lineas",
+      "flujo_mw",
+      "llave_barra_a",
+      "id_barra_info_a",
+      "nmb_barra_info_a",
+      "llave_barra_b",
+      "id_barra_info_b",
+      "nmb_barra_info_b",
+      "fecha_hora",
+      "perdidas_mw",
+      "fecha_programa",
+      "hora_programa",
+      "fecha_hora_programa"
+     ],
+     "ejemplo": {
+      "id": 24804874,
+      "flujo_lineas": "AJahuel220->PAltoCmpc110",
+      "flujo_mw": 0.0,
+      "llave_barra_a": "AJahuel220",
+      "id_barra_info_a": 457,
+      "nmb_barra_info_a": "BA S/E ALTO JAHUEL 220KV BP1",
+      "llave_barra_b": "PAltoCmpc110",
+      "id_barra_info_b": 1202,
+      "nmb_barra_info_b": "BA S/E PUENTE ALTO (CMPC) 110KV BP1",
+      "fecha_hora": "2026-11-11 00:00:00",
+      "perdidas_mw": 0.0,
+      "fecha_programa": "2026-11-09",
+      "hora_programa": 10,
+      "fecha_hora_programa": "2026-11-09"
+     },
+     "fecha_min": "2026-11-09",
+     "fecha_max": "2026-11-11 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    }
+   },
+   "paginacion": {
+    "totalPages": 61,
+    "base": "desde 1",
+    "ultima_pagina": {
+     "page": 61,
+     "http": 200,
+     "n": 12,
+     "fecha_min": "2026-11-16",
+     "fecha_max": "2026-11-18 17:00:00"
+    }
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "potencia-transitada/v4/findByDate",
+   "prioridad": "media",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 7.6,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 6.0,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 64,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "empresa",
+      "punto_medida",
+      "zona",
+      "barra",
+      "tension_barra",
+      "medidor",
+      "fecha",
+      "anio",
+      "mes",
+      "dia",
+      "hora",
+      "utc",
+      "energia_d",
+      "energia_r",
+      "potencia_kwh",
+      "potencia_mwh",
+      "nombre_linea",
+      "id_linea",
+      "sentido_linea",
+      "ssee_linea"
+     ],
+     "ejemplo": {
+      "empresa": "INTERCHILE",
+      "punto_medida": "NCARDONE_500_K6-K5_ITC",
+      "zona": "Norte Grande",
+      "barra": "NUEVA CARDONES",
+      "tension_barra": "500",
+      "medidor": "MW1504A67402_0100",
+      "fecha": "2026-11-17",
+      "anio": 2026,
+      "mes": "11",
+      "dia": "17",
+      "hora": "19",
+      "utc": "22",
+      "energia_d": -10519.2418213,
+      "energia_r": 19922.4069061,
+      "potencia_kwh": 9403.1650848,
+      "potencia_mwh": 9.4031650848,
+      "nombre_linea": "Nueva Cardones - N Maitencillo  500KV C2",
+      "id_linea": "904",
+      "sentido_linea": "2",
+      "ssee_linea": "Nueva Cardones 500 kV"
+     },
+     "fecha_min": "2026-11-17",
+     "fecha_max": "2026-11-17",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 4.0,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 186,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "empresa",
+      "punto_medida",
+      "zona",
+      "barra",
+      "tension_barra",
+      "medidor",
+      "fecha",
+      "anio",
+      "mes",
+      "dia",
+      "hora",
+      "utc",
+      "energia_d",
+      "energia_r",
+      "potencia_kwh",
+      "potencia_mwh",
+      "nombre_linea",
+      "id_linea",
+      "sentido_linea",
+      "ssee_linea"
+     ],
+     "ejemplo": {
+      "empresa": "TRANSELEC",
+      "punto_medida": "SRIOMALC_220_J4-J5_TRL",
+      "zona": "Sur",
+      "barra": "SECCIONADORA RIO MALLECO",
+      "tension_barra": "220",
+      "medidor": "3190880460",
+      "fecha": "2026-11-11",
+      "anio": 2026,
+      "mes": "11",
+      "dia": "11",
+      "hora": "06",
+      "utc": "09",
+      "energia_d": 0.0,
+      "energia_r": -105968.953125,
+      "potencia_kwh": -105968.953125,
+      "potencia_mwh": -105.968953125,
+      "nombre_linea": "Rio Malleco - Mulchen 220KV C2",
+      "id_linea": "1490",
+      "sentido_linea": "2",
+      "ssee_linea": "Rio Malleco 220 KV"
+     },
+     "fecha_min": "2026-11-11",
+     "fecha_max": "2026-11-11",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    }
+   },
+   "paginacion": {
+    "totalPages": 0,
+    "base": "una sola página"
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "instrucciones-operacionales-cmg/v4/findByDate",
+   "prioridad": "media",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 0.9,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.0,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 37,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id_central",
+      "id_unidad_generadora",
+      "id_instruccion",
+      "fecha",
+      "hora",
+      "central",
+      "configuracion",
+      "despacho",
+      "estado",
+      "estado_operativo",
+      "consigna",
+      "instruccion_cmg",
+      "motivo",
+      "zona_desaclope",
+      "control_tension"
+     ],
+     "ejemplo": {
+      "id_central": "",
+      "id_unidad_generadora": "",
+      "id_instruccion": 3086899,
+      "fecha": "2026-11-17 00:00:00",
+      "hora": "01:00:00",
+      "central": "SAE-CRCA-PFV-TAMARICO",
+      "configuracion": "SAE-CRCA-PFV-TAMARICO",
+      "despacho": 0.0,
+      "estado": "P",
+      "estado_operativo": "-",
+      "consigna": "EP",
+      "instruccion_cmg": "EP",
+      "motivo": "Termina descarga",
+      "zona_desaclope": "",
+      "control_tension": ""
+     },
+     "fecha_min": "2026-11-17 00:00:00",
+     "fecha_max": "2026-11-17 00:00:00"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.3,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 28,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id_central",
+      "id_unidad_generadora",
+      "id_instruccion",
+      "fecha",
+      "hora",
+      "central",
+      "configuracion",
+      "despacho",
+      "estado",
+      "estado_operativo",
+      "consigna",
+      "instruccion_cmg",
+      "motivo",
+      "zona_desaclope",
+      "control_tension"
+     ],
+     "ejemplo": {
+      "id_central": "",
+      "id_unidad_generadora": "",
+      "id_instruccion": 3064741,
+      "fecha": "2026-11-11 00:00:00",
+      "hora": "19:20:00",
+      "central": "CIPRESES-2",
+      "configuracion": "CIPRESES_visla_pehu_colb",
+      "despacho": 35.0,
+      "estado": "RO",
+      "estado_operativo": "-",
+      "consigna": "PC",
+      "instruccion_cmg": "OM",
+      "motivo": "",
+      "zona_desaclope": "",
+      "control_tension": ""
+     },
+     "fecha_min": "2026-11-11 00:00:00",
+     "fecha_max": "2026-11-11 00:00:00"
+    }
+   },
+   "paginacion": {
+    "totalPages": 0,
+    "base": "una sola página"
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "embalse-real/v3/findLast",
+   "prioridad": "media",
+   "tipo": "fijo",
+   "pruebas": {
+    "sin_fecha": {
+     "params": {},
+     "http": 200,
+     "seg": 1.4,
+     "n": 10,
+     "forma": "lista",
+     "meta": {},
+     "campos": [
+      "nombre",
+      "fecha",
+      "title",
+      "subtitle",
+      "cotaActual",
+      "cotaMax",
+      "cotaMin",
+      "minOperacion",
+      "marker",
+      "porcentajeActual"
+     ],
+     "ejemplo": {
+      "nombre": "Machicura",
+      "fecha": 1794985200000,
+      "title": "257,4",
+      "subtitle": "msnm",
+      "cotaActual": 257.4,
+      "cotaMax": 257.5,
+      "cotaMin": 255.5,
+      "minOperacion": 255.5,
+      "marker": 0,
+      "porcentajeActual": 95.0
+     },
+     "fecha_min": "2026-11-18 04:00:00",
+     "fecha_max": "2026-11-18 04:00:00"
+    }
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "stock-combustibles/v4/findByDate",
+   "prioridad": "media",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 3.5,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.1,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.2,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 4,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "id_fecha",
+      "id_empresa",
+      "empresa",
+      "id_central",
+      "central",
+      "tipo_stock",
+      "tipo_1",
+      "tipo_2",
+      "tipo_combustible",
+      "codigo_carga",
+      "stock_inicial",
+      "cantidad_descargada",
+      "volumen_descargado",
+      "valor_recibido",
+      "perdida",
+      "consumo",
+      "merma",
+      "valor_retirado",
+      "compra_recibida",
+      "valor_transferido",
+      "venta_entregada",
+      "stock_final",
+      "estado",
+      "comentario",
+      "fecha"
+     ],
+     "ejemplo": {
+      "id": 2176111,
+      "id_fecha": 2336337,
+      "id_empresa": 37800,
+      "empresa": "ENORCHILE",
+      "id_central": 246950,
+      "central": "ESPERANZA",
+      "tipo_stock": "DIE",
+      "tipo_1": "Combustible",
+      "tipo_2": "Diesel",
+      "tipo_combustible": 1,
+      "codigo_carga": 2068320,
+      "stock_inicial": 156.2971,
+      "cantidad_descargada": null,
+      "volumen_descargado": 0.0,
+      "valor_recibido": null,
+      "perdida": null,
+      "consumo": 0.0,
+      "merma": 0.0,
+      "valor_retirado": null,
+      "compra_recibida": null,
+      "valor_transferido": null,
+      "venta_entregada": null,
+      "stock_final": 156.2971,
+      "estado": "Recibido",
+      "comentario": "Stock 17:00 hrs.",
+      "fecha": "2026-11-11 00:00:00"
+     },
+     "fecha_min": "2026-11-11 00:00:00",
+     "fecha_max": "2026-11-11 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    }
+   },
+   "paginacion": {
+    "totalPages": 0,
+    "base": "una sola página"
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "generacion-programada-pcp/v4/findByDate",
+   "prioridad": "media",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.5,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 3092,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "llave_gen",
+      "gen_programada_mw",
+      "fecha_hora",
+      "id_central",
+      "central",
+      "tipo_tecnologia",
+      "subtipo_tecnologia",
+      "costo_generacion_usd",
+      "costo_partida_detencion_usd",
+      "costo_total_generacion_usd",
+      "capacidad_disponible_mw",
+      "fecha_programa",
+      "region",
+      "barra",
+      "clasificacion",
+      "configuracion",
+      "id_barra_info",
+      "nmb_barra_info"
+     ],
+     "ejemplo": {
+      "id": 443357761,
+      "llave_gen": "ALBOR_FV",
+      "gen_programada_mw": 0.0,
+      "fecha_hora": "2026-11-18 00:00:00",
+      "id_central": 2074,
+      "central": "PMGD PFV ALBOR SOLAR",
+      "tipo_tecnologia": "Solares",
+      "subtipo_tecnologia": "Solar",
+      "costo_generacion_usd": 0.0,
+      "costo_partida_detencion_usd": 0.0,
+      "costo_total_generacion_usd": 0.0,
+      "capacidad_disponible_mw": 0.0,
+      "fecha_programa": "2026-11-18",
+      "region": "Biobío",
+      "barra": "Mulchen220",
+      "clasificacion": "PMGD",
+      "configuracion": "PFV-ALBOR-U1_SOLAR",
+      "id_barra_info": 1391,
+      "nmb_barra_info": "BA S/E MULCHEN 220KV BP1-1"
+     },
+     "fecha_min": "2026-11-18",
+     "fecha_max": "2026-11-18 00:00:00"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 3.1,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 3093,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "llave_gen",
+      "gen_programada_mw",
+      "fecha_hora",
+      "id_central",
+      "central",
+      "tipo_tecnologia",
+      "subtipo_tecnologia",
+      "costo_generacion_usd",
+      "costo_partida_detencion_usd",
+      "costo_total_generacion_usd",
+      "capacidad_disponible_mw",
+      "fecha_programa",
+      "region",
+      "barra",
+      "clasificacion",
+      "configuracion",
+      "id_barra_info",
+      "nmb_barra_info"
+     ],
+     "ejemplo": {
+      "id": 464445699,
+      "llave_gen": "ALCON_FV",
+      "gen_programada_mw": 0.0,
+      "fecha_hora": "2026-11-17 00:00:00",
+      "id_central": 2002,
+      "central": "PMGD PFV GR ALCON SOLAR",
+      "tipo_tecnologia": "Solares",
+      "subtipo_tecnologia": "Solar",
+      "costo_generacion_usd": 0.0,
+      "costo_partida_detencion_usd": 0.0,
+      "costo_total_generacion_usd": 0.0,
+      "capacidad_disponible_mw": 0.0,
+      "fecha_programa": "2026-11-17",
+      "region": "Libertador General Bernardo O'Higgins",
+      "barra": "Rapel220",
+      "clasificacion": "PMGD",
+      "configuracion": "PFV-ALCON-U1_SOLAR",
+      "id_barra_info": 1360,
+      "nmb_barra_info": "BA S/E RAPEL 220KV BP1"
+     },
+     "fecha_min": "2026-11-17",
+     "fecha_max": "2026-11-17 00:00:00"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 1.7,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 3092,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "llave_gen",
+      "gen_programada_mw",
+      "fecha_hora",
+      "id_central",
+      "central",
+      "tipo_tecnologia",
+      "subtipo_tecnologia",
+      "costo_generacion_usd",
+      "costo_partida_detencion_usd",
+      "costo_total_generacion_usd",
+      "capacidad_disponible_mw",
+      "fecha_programa",
+      "region",
+      "barra",
+      "clasificacion",
+      "configuracion",
+      "id_barra_info",
+      "nmb_barra_info"
+     ],
+     "ejemplo": {
+      "id": 338536328,
+      "llave_gen": "AGUAS_CLARAS_FV",
+      "gen_programada_mw": 0.0,
+      "fecha_hora": "2026-11-11 00:00:00",
+      "id_central": 2452,
+      "central": "PMGD PFV AGUAS CLARAS",
+      "tipo_tecnologia": "Solares",
+      "subtipo_tecnologia": "Solar",
+      "costo_generacion_usd": 0.0,
+      "costo_partida_detencion_usd": 0.0,
+      "costo_total_generacion_usd": 0.0,
+      "capacidad_disponible_mw": 0.0,
+      "fecha_programa": "2026-11-11",
+      "region": "Metropolitana de Santiago",
+      "barra": "CNavia110",
+      "clasificacion": "PMGD",
+      "configuracion": "PFV-AGUAS-CLARAS-U1_SOLAR",
+      "id_barra_info": 3374,
+      "nmb_barra_info": "BA S/E CERRO NAVIA (ENEL TRANSMISION) 110KV BP1-2"
+     },
+     "fecha_min": "2026-11-11",
+     "fecha_max": "2026-11-11 00:00:00"
+    }
+   },
+   "paginacion": {
+    "totalPages": 3092,
+    "base": "page=0 repite page=1: numeración desde 1",
+    "ultima_pagina": {
+     "page": 3092,
+     "http": 200,
+     "n": 20,
+     "fecha_min": "2026-11-18",
+     "fecha_max": "2026-11-24 23:00:00"
+    }
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "generacion-programada-pid/v4/findByDate",
+   "prioridad": "media",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 404,
+     "seg": 1.0,
+     "error": "{\"detail\":\"Not Found\"}"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.9,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 4.5,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 884,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "llave_gen",
+      "gen_programada_mw",
+      "fecha_hora",
+      "id_central",
+      "central",
+      "tipo_tecnologia",
+      "subtipo_tecnologia",
+      "costo_generacion_usd",
+      "costo_partida_detencion_usd",
+      "costo_total_generacion_usd",
+      "capacidad_disponible_mw",
+      "fecha_programa",
+      "hora_programa",
+      "fecha_hora_programa",
+      "region",
+      "barra",
+      "clasificacion",
+      "configuracion",
+      "id_barra_info",
+      "nmb_barra_info"
+     ],
+     "ejemplo": {
+      "id": 129802692,
+      "llave_gen": "ALCONES_FV",
+      "gen_programada_mw": 0.0,
+      "fecha_hora": "2026-11-11 00:00:00",
+      "id_central": 2390,
+      "central": "PFV ALCONES",
+      "tipo_tecnologia": "Solares",
+      "subtipo_tecnologia": "Solar",
+      "costo_generacion_usd": 0.0,
+      "costo_partida_detencion_usd": 0.0,
+      "costo_total_generacion_usd": 0.0,
+      "capacidad_disponible_mw": 0.0,
+      "fecha_programa": "2026-11-11",
+      "hora_programa": 0,
+      "fecha_hora_programa": "2026-11-11",
+      "region": "Libertador General Bernardo O'Higgins",
+      "barra": "Rapel220",
+      "clasificacion": "IG",
+      "configuracion": "PFV-ALCONES-U1_SOLAR",
+      "id_barra_info": 1360,
+      "nmb_barra_info": "BA S/E RAPEL 220KV BP1"
+     },
+     "fecha_min": "2026-11-11",
+     "fecha_max": "2026-11-11 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    }
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "demanda-programada-pid/v4/findByDate",
+   "prioridad": "media",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.3,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 48,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "llave_dem",
+      "id_barra_info",
+      "nmb_barra_info",
+      "demanda_prog_mw",
+      "fecha_hora",
+      "fecha_programa",
+      "hora_programa",
+      "fecha_hora_programa",
+      "zona",
+      "region"
+     ],
+     "ejemplo": {
+      "id": 26781170,
+      "llave_dem": "Barriles220",
+      "id_barra_info": 2308,
+      "nmb_barra_info": "BA S/E TAP OFF BARRILES 220KV BP",
+      "demanda_prog_mw": 5.59119610708305,
+      "fecha_hora": "2026-11-18 00:00:00",
+      "fecha_programa": "2026-11-16",
+      "hora_programa": 18,
+      "fecha_hora_programa": "2026-11-16",
+      "zona": "Norte",
+      "region": "Antofagasta"
+     },
+     "fecha_min": "2026-11-16",
+     "fecha_max": "2026-11-18 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.6,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 229,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "llave_dem",
+      "id_barra_info",
+      "nmb_barra_info",
+      "demanda_prog_mw",
+      "fecha_hora",
+      "fecha_programa",
+      "hora_programa",
+      "fecha_hora_programa",
+      "zona",
+      "region"
+     ],
+     "ejemplo": {
+      "id": 26676050,
+      "llave_dem": "AltoNorte110",
+      "id_barra_info": 1871,
+      "nmb_barra_info": "BA S/E ALTO NORTE 110KV BP",
+      "demanda_prog_mw": 49.9273545845265,
+      "fecha_hora": "2026-11-17 00:00:00",
+      "fecha_programa": "2026-11-15",
+      "hora_programa": 6,
+      "fecha_hora_programa": "2026-11-15",
+      "zona": "Norte",
+      "region": "Antofagasta"
+     },
+     "fecha_min": "2026-11-15",
+     "fecha_max": "2026-11-17 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.6,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 333,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "llave_dem",
+      "id_barra_info",
+      "nmb_barra_info",
+      "demanda_prog_mw",
+      "fecha_hora",
+      "fecha_programa",
+      "hora_programa",
+      "fecha_hora_programa",
+      "zona",
+      "region"
+     ],
+     "ejemplo": {
+      "id": 26474034,
+      "llave_dem": "Arica066",
+      "id_barra_info": 1897,
+      "nmb_barra_info": "BA S/E ARICA 66KV BP1",
+      "demanda_prog_mw": 5.32387299154983,
+      "fecha_hora": "2026-11-11 00:00:00",
+      "fecha_programa": "2026-11-09",
+      "hora_programa": 10,
+      "fecha_hora_programa": "2026-11-09",
+      "zona": "Norte",
+      "region": "Arica y Parinacota"
+     },
+     "fecha_min": "2026-11-09",
+     "fecha_max": "2026-11-11 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    }
+   },
+   "paginacion": {
+    "totalPages": 48,
+    "base": "desde 1",
+    "ultima_pagina": {
+     "page": 48,
+     "http": 200,
+     "n": 88,
+     "fecha_min": "2026-11-16",
+     "fecha_max": "2026-11-18 17:00:00"
+    }
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "capacidad-instalada/v4/findByDate",
+   "prioridad": "baja",
+   "tipo": "fijo",
+   "pruebas": {
+    "sin_fecha": {
+     "params": {
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 3.6,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 13,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id_central",
+      "nombre_central",
+      "id_propietario",
+      "propietario",
+      "convencional_ernc",
+      "fecha_entrada_operacion",
+      "region",
+      "tipo_tecnologia_central",
+      "potencia_maxima"
+     ],
+     "ejemplo": {
+      "id_central": 2450,
+      "nombre_central": "PFV CACHIYUYO [EN_REVISION]",
+      "id_propietario": 2708,
+      "propietario": "PARQUE SOLAR CACHIYUYO SPA [EN_REVISION]",
+      "convencional_ernc": "",
+      "fecha_entrada_operacion": "",
+      "region": "",
+      "tipo_tecnologia_central": "",
+      "potencia_maxima": 0.0
+     },
+     "fecha_min": null,
+     "fecha_max": null
+    }
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "programas-mantenimiento-mayor/v4/findByDate",
+   "prioridad": "baja",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 4.6,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.7,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.7,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    }
+   },
+   "paginacion": {
+    "totalPages": 0,
+    "base": "una sola página"
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "solicitudes-trabajo/v4/findByDate",
+   "prioridad": "baja",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.6,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.8,
+     "n": 74,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 1,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "correlativo",
+      "grupo_nombre",
+      "empresa_nombre",
+      "centro_control",
+      "status",
+      "tipo_solicitud",
+      "type",
+      "origen",
+      "tipo_programacion",
+      "consumo",
+      "perdida_registro_energia",
+      "descripcion_nivel_riesgo",
+      "fecha_inicio",
+      "fecha_fin",
+      "created",
+      "modified",
+      "partition_date",
+      "instalacion_nombre"
+     ],
+     "ejemplo": {
+      "id": "6afd0082ad651f0209204e40",
+      "correlativo": 2026144966.0,
+      "grupo_nombre": "ALFA TRANSMISORA DE ENERGÍA S.A.",
+      "empresa_nombre": "ALFA TRANSMISORA DE ENERGÍA S.A.",
+      "centro_control": "COLBÚN S.A.",
+      "status": "pendiente",
+      "tipo_solicitud": "desconexion",
+      "type": "linea",
+      "origen": "externo",
+      "tipo_programacion": "programada",
+      "consumo": "consumo_no_afectado",
+      "perdida_registro_energia": null,
+      "descripcion_nivel_riesgo": "Riesgos declarados y controlados por RNE.",
+      "fecha_inicio": "2026-12-02 08:00:00",
+      "fecha_fin": "2026-12-02 20:00:00",
+      "created": "2026-11-17 22:33:54",
+      "modified": "2026-11-17 23:20:29",
+      "partition_date": "2026-11-17",
+      "instalacion_nombre": "QUILAPILUN - LOS MAQUIS 220KV"
+     },
+     "fecha_min": "2026-11-17",
+     "fecha_max": "2026-12-13 18:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.3,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 9,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "correlativo",
+      "grupo_nombre",
+      "empresa_nombre",
+      "centro_control",
+      "status",
+      "tipo_solicitud",
+      "type",
+      "origen",
+      "tipo_programacion",
+      "consumo",
+      "perdida_registro_energia",
+      "descripcion_nivel_riesgo",
+      "fecha_inicio",
+      "fecha_fin",
+      "created",
+      "modified",
+      "partition_date",
+      "instalacion_nombre"
+     ],
+     "ejemplo": {
+      "id": "6af3da73ad651f2aa8f4fa1b",
+      "correlativo": 2026140989.0,
+      "grupo_nombre": "TRANSELEC S.A.",
+      "empresa_nombre": "TRANSELEC S.A.",
+      "centro_control": "TRANSELEC S.A.",
+      "status": "pendiente",
+      "tipo_solicitud": "intervencion",
+      "type": "subestacion",
+      "origen": "interno",
+      "tipo_programacion": "programada",
+      "consumo": "consumo_no_afectado",
+      "perdida_registro_energia": null,
+      "descripcion_nivel_riesgo": "Bajo",
+      "fecha_inicio": "2026-11-17 10:00:00",
+      "fecha_fin": "2026-11-17 18:00:00",
+      "created": "2026-11-11 00:01:07",
+      "modified": "2026-11-11 00:01:07",
+      "partition_date": "2026-11-11",
+      "instalacion_nombre": "S/E CIRUELOS"
+     },
+     "fecha_min": "2026-11-11",
+     "fecha_max": "2026-12-14 18:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    }
+   },
+   "paginacion": {
+    "totalPages": 0,
+    "base": "una sola página"
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "energia-no-suministrada/v4/findByDate",
+   "prioridad": "baja",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.8,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.1,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 1.9,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    }
+   },
+   "paginacion": {
+    "totalPages": 0,
+    "base": "una sola página"
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "servicios-complementarios-programados-pcp/v4/findByDate",
+   "prioridad": "baja",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 504,
+     "seg": 64.4,
+     "error": "{\"message\": \"Endpoint request timed out\"}",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 35.6,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 6177,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "llave_sscc",
+      "id_central",
+      "central",
+      "provision_mw",
+      "tipo_servicio",
+      "fecha_hora",
+      "fecha_programa",
+      "region",
+      "barra",
+      "configuracion",
+      "subtipo_tecnologia",
+      "id_barra_info",
+      "nmb_barra_info"
+     ],
+     "ejemplo": {
+      "id": 1312801345,
+      "llave_sscc": "PANGUE_U1",
+      "id_central": 178,
+      "central": "HE PANGUE",
+      "provision_mw": 0.0,
+      "tipo_servicio": "CPF (-)",
+      "fecha_hora": "2026-11-17 00:00:00",
+      "fecha_programa": "2026-11-11",
+      "region": "Biobío",
+      "barra": "Pangue220",
+      "configuracion": "PANGUE_U1",
+      "subtipo_tecnologia": "Embalse",
+      "id_barra_info": 0,
+      "nmb_barra_info": "Pendiente"
+     },
+     "fecha_min": "2026-11-11",
+     "fecha_max": "2026-11-17 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 22.9,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 6150,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id",
+      "llave_sscc",
+      "id_central",
+      "central",
+      "provision_mw",
+      "tipo_servicio",
+      "fecha_hora",
+      "fecha_programa",
+      "region",
+      "barra",
+      "configuracion",
+      "subtipo_tecnologia",
+      "id_barra_info",
+      "nmb_barra_info"
+     ],
+     "ejemplo": {
+      "id": 1307886337,
+      "llave_sscc": "ATA-TG2A+0.5TV2C_DIE",
+      "id_central": 393,
+      "central": "TER ATACAMA",
+      "provision_mw": 0.0,
+      "tipo_servicio": "CPF (-)",
+      "fecha_hora": "2026-11-11 00:00:00",
+      "fecha_programa": "2026-11-05",
+      "region": "Antofagasta",
+      "barra": "Atacama220_BP1",
+      "configuracion": "ATA-TG2A+0.5TV2C_DIE",
+      "subtipo_tecnologia": "Diésel",
+      "id_barra_info": 1899,
+      "nmb_barra_info": "BA S/E ATACAMA 220KV BP1"
+     },
+     "fecha_min": "2026-11-05",
+     "fecha_max": "2026-11-11 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    }
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "instrucciones-operacionales-sscc/v4/findByDate",
+   "prioridad": "baja",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.1,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.2,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 4.8,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 10,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id_central",
+      "id_barra",
+      "fecha",
+      "hora_inicio",
+      "hora_fin",
+      "instruccion_sscc",
+      "id_configuracion",
+      "central",
+      "barra_ct",
+      "instalacion",
+      "configuracion",
+      "disponibilidad",
+      "estado",
+      "sscc_baja",
+      "sscc_sube",
+      "unidad",
+      "motivo",
+      "comentario"
+     ],
+     "ejemplo": {
+      "id_central": "",
+      "id_barra": "",
+      "fecha": "2026-11-11 00:00:00",
+      "hora_inicio": "13:00:00",
+      "hora_fin": "17:00:00",
+      "instruccion_sscc": "CPF (-)",
+      "id_configuracion": 1080,
+      "central": "RALCO",
+      "barra_ct": null,
+      "instalacion": "RALCO-1",
+      "configuracion": "RALCO_vangos",
+      "disponibilidad": null,
+      "estado": null,
+      "sscc_baja": null,
+      "sscc_sube": null,
+      "unidad": "MW",
+      "motivo": "Asignación directa por participación en control Primario de frecuencia CPF (-).",
+      "comentario": "Reemplaza a RALCO_vangos por cambio de serie hidráulica."
+     },
+     "fecha_min": "2026-11-11 00:00:00",
+     "fecha_max": "2026-11-11 00:00:00",
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    }
+   },
+   "paginacion": {
+    "totalPages": 0,
+    "base": "una sola página"
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "generacion-programada-sum/v3/getSumGeneration",
+   "prioridad": "extra",
+   "tipo": "v3",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "pageSize": 100,
+      "technology": "Solar"
+     },
+     "http": 500,
+     "seg": 5.9,
+     "error": "{\"message\":\"Internal server error\",\"detail\":\"Error in RequestId: 50830224-a2df-46d2-be99-56ebcb753370\"}"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "pageSize": 100,
+      "technology": "Solar"
+     },
+     "http": 500,
+     "seg": 6.5,
+     "error": "{\"message\":\"Internal server error\",\"detail\":\"Error in RequestId: 1b436596-05da-4b52-87cc-bf83d681b63a\"}"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "pageSize": 100,
+      "technology": "Solar"
+     },
+     "http": 500,
+     "seg": 6.4,
+     "error": "{\"message\":\"Internal server error\",\"detail\":\"Error in RequestId: ea38e8d7-bc5e-4f5d-8710-3828d68aa9e1\"}"
+    }
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "pronostico-centrales-pasada/v4/findByDate",
+   "prioridad": "extra",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 5.4,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 1.2,
+     "n": 0,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 0,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [],
+     "ejemplo": null,
+     "fecha_min": null,
+     "fecha_max": null
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 0,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 1.9,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 145,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id_central",
+      "nombre_central",
+      "fecha_prevision",
+      "fecha_hora",
+      "hora",
+      "energia_mwh"
+     ],
+     "ejemplo": {
+      "id_central": 192,
+      "nombre_central": "HP FLORIDA II",
+      "fecha_prevision": "2026-11-11 00:00:00",
+      "fecha_hora": "2026-11-18 20:00:00",
+      "hora": 20,
+      "energia_mwh": 6.0
+     },
+     "fecha_min": "2026-11-11 00:00:00",
+     "fecha_max": "2026-11-21 23:00:00"
+    }
+   },
+   "paginacion": {
+    "totalPages": 0,
+    "base": "una sola página"
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "unidades-generadoras/v4/findByDate",
+   "prioridad": "extra",
+   "tipo": "v4",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "startDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 11.7,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 34,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id_unidad",
+      "id_central",
+      "id_subestacion",
+      "central",
+      "unidad_numero",
+      "unidad_nemotecnico",
+      "unidad_nombre",
+      "unidad_descripcion",
+      "id_tecnologia",
+      "nombre_tecnologia",
+      "id_propietario",
+      "nombre_propietario",
+      "subestacion",
+      "punto_conexion",
+      "pot_aparente_max",
+      "pot_max_bruta",
+      "%_consumos_propios",
+      "pot_neta_efectiva",
+      "pot_min_tecnica",
+      "fecha_entrada_operacion",
+      "nombre_central",
+      "coordenada_este",
+      "coordenada_norte",
+      "huso",
+      "parametros_partida",
+      "curva_consumo",
+      "tension_nominal",
+      "factor_pot_nominal",
+      "informe_homologacion",
+      "min_tecnico_normativa_ambiental",
+      "min_tecnico_control_frecuencia",
+      "tipo_tecnologia_unidad",
+      "tipo_tecnologia_indice"
+     ],
+     "ejemplo": {
+      "id_unidad": 15,
+      "id_central": 101,
+      "id_subestacion": null,
+      "central": "HP RUCUE",
+      "unidad_numero": 2,
+      "unidad_nemotecnico": "CE07U02G0004",
+      "unidad_nombre": "HP RUCUE U2",
+      "unidad_descripcion": "",
+      "id_tecnologia": 7,
+      "nombre_tecnologia": "Hidroeléctrica de Pasada",
+      "id_propietario": 4,
+      "nombre_propietario": "COLBÚN S.A.",
+      "subestacion": null,
+      "punto_conexion": "S/E CENTRAL RUCUE 220KV B2",
+      "pot_aparente_max": "93",
+      "pot_max_bruta": "89,2",
+      "%_consumos_propios": "0,15",
+      "pot_neta_efectiva": "89,0662",
+      "pot_min_tecnica": "35,3",
+      "fecha_entrada_operacion": "No Aplica",
+      "nombre_central": "CE07U02G004",
+      "coordenada_este": "",
+      "coordenada_norte": "5861311,96340298",
+      "huso": "",
+      "parametros_partida": "Carta DE 4697/2019",
+      "curva_consumo": "NO APLICA",
+      "tension_nominal": "13,8",
+      "factor_pot_nominal": "0,9",
+      "informe_homologacion": "EE-EN-2015-0408-RC_Informe_Homologación_Rucue_U2",
+      "min_tecnico_normativa_ambiental": "35,3",
+      "min_tecnico_control_frecuencia": "35,3",
+      "tipo_tecnologia_unidad": "Hidroeléctrica de pasada",
+      "tipo_tecnologia_indice": "Hidráulica Pasada"
+     },
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "ayer": {
+     "params": {
+      "startDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.1,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 34,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id_unidad",
+      "id_central",
+      "id_subestacion",
+      "central",
+      "unidad_numero",
+      "unidad_nemotecnico",
+      "unidad_nombre",
+      "unidad_descripcion",
+      "id_tecnologia",
+      "nombre_tecnologia",
+      "id_propietario",
+      "nombre_propietario",
+      "subestacion",
+      "punto_conexion",
+      "pot_aparente_max",
+      "pot_max_bruta",
+      "%_consumos_propios",
+      "pot_neta_efectiva",
+      "pot_min_tecnica",
+      "fecha_entrada_operacion",
+      "nombre_central",
+      "coordenada_este",
+      "coordenada_norte",
+      "huso",
+      "parametros_partida",
+      "curva_consumo",
+      "tension_nominal",
+      "factor_pot_nominal",
+      "informe_homologacion",
+      "min_tecnico_normativa_ambiental",
+      "min_tecnico_control_frecuencia",
+      "tipo_tecnologia_unidad",
+      "tipo_tecnologia_indice"
+     ],
+     "ejemplo": {
+      "id_unidad": 15,
+      "id_central": 101,
+      "id_subestacion": null,
+      "central": "HP RUCUE",
+      "unidad_numero": 2,
+      "unidad_nemotecnico": "CE07U02G0004",
+      "unidad_nombre": "HP RUCUE U2",
+      "unidad_descripcion": "",
+      "id_tecnologia": 7,
+      "nombre_tecnologia": "Hidroeléctrica de Pasada",
+      "id_propietario": 4,
+      "nombre_propietario": "COLBÚN S.A.",
+      "subestacion": null,
+      "punto_conexion": "S/E CENTRAL RUCUE 220KV B2",
+      "pot_aparente_max": "93",
+      "pot_max_bruta": "89,2",
+      "%_consumos_propios": "0,15",
+      "pot_neta_efectiva": "89,0662",
+      "pot_min_tecnica": "35,3",
+      "fecha_entrada_operacion": "No Aplica",
+      "nombre_central": "CE07U02G004",
+      "coordenada_este": "",
+      "coordenada_norte": "5861311,96340298",
+      "huso": "",
+      "parametros_partida": "Carta DE 4697/2019",
+      "curva_consumo": "NO APLICA",
+      "tension_nominal": "13,8",
+      "factor_pot_nominal": "0,9",
+      "informe_homologacion": "EE-EN-2015-0408-RC_Informe_Homologación_Rucue_U2",
+      "min_tecnico_normativa_ambiental": "35,3",
+      "min_tecnico_control_frecuencia": "35,3",
+      "tipo_tecnologia_unidad": "Hidroeléctrica de pasada",
+      "tipo_tecnologia_indice": "Hidráulica Pasada"
+     },
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    },
+    "hace_7d": {
+     "params": {
+      "startDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "limit": 100
+     },
+     "http": 200,
+     "seg": 2.4,
+     "n": 100,
+     "forma": "objeto con 'data'",
+     "meta": {
+      "totalPages": 34,
+      "page": 1,
+      "limit": 100
+     },
+     "campos": [
+      "id_unidad",
+      "id_central",
+      "id_subestacion",
+      "central",
+      "unidad_numero",
+      "unidad_nemotecnico",
+      "unidad_nombre",
+      "unidad_descripcion",
+      "id_tecnologia",
+      "nombre_tecnologia",
+      "id_propietario",
+      "nombre_propietario",
+      "subestacion",
+      "punto_conexion",
+      "pot_aparente_max",
+      "pot_max_bruta",
+      "%_consumos_propios",
+      "pot_neta_efectiva",
+      "pot_min_tecnica",
+      "fecha_entrada_operacion",
+      "nombre_central",
+      "coordenada_este",
+      "coordenada_norte",
+      "huso",
+      "parametros_partida",
+      "curva_consumo",
+      "tension_nominal",
+      "factor_pot_nominal",
+      "informe_homologacion",
+      "min_tecnico_normativa_ambiental",
+      "min_tecnico_control_frecuencia",
+      "tipo_tecnologia_unidad",
+      "tipo_tecnologia_indice"
+     ],
+     "ejemplo": {
+      "id_unidad": 15,
+      "id_central": 101,
+      "id_subestacion": null,
+      "central": "HP RUCUE",
+      "unidad_numero": 2,
+      "unidad_nemotecnico": "CE07U02G0004",
+      "unidad_nombre": "HP RUCUE U2",
+      "unidad_descripcion": "",
+      "id_tecnologia": 7,
+      "nombre_tecnologia": "Hidroeléctrica de Pasada",
+      "id_propietario": 4,
+      "nombre_propietario": "COLBÚN S.A.",
+      "subestacion": null,
+      "punto_conexion": "S/E CENTRAL RUCUE 220KV B2",
+      "pot_aparente_max": "93",
+      "pot_max_bruta": "89,2",
+      "%_consumos_propios": "0,15",
+      "pot_neta_efectiva": "89,0662",
+      "pot_min_tecnica": "35,3",
+      "fecha_entrada_operacion": "No Aplica",
+      "nombre_central": "CE07U02G004",
+      "coordenada_este": "",
+      "coordenada_norte": "5861311,96340298",
+      "huso": "",
+      "parametros_partida": "Carta DE 4697/2019",
+      "curva_consumo": "NO APLICA",
+      "tension_nominal": "13,8",
+      "factor_pot_nominal": "0,9",
+      "informe_homologacion": "EE-EN-2015-0408-RC_Informe_Homologación_Rucue_U2",
+      "min_tecnico_normativa_ambiental": "35,3",
+      "min_tecnico_control_frecuencia": "35,3",
+      "tipo_tecnologia_unidad": "Hidroeléctrica de pasada",
+      "tipo_tecnologia_indice": "Hidráulica Pasada"
+     },
+     "fecha_min": null,
+     "fecha_max": null,
+     "nota": "page=0 respondió HTTP 502; se usó page=1"
+    }
+   },
+   "paginacion": {
+    "totalPages": 34,
+    "base": "desde 1",
+    "ultima_pagina": {
+     "page": 34,
+     "http": 200,
+     "n": 64,
+     "fecha_min": null,
+     "fecha_max": null
+    }
+   }
+  },
+  {
+   "servicio": "sip",
+   "path": "api/v2/recursos/demanda_sistema_real/",
+   "prioridad": "extra",
+   "tipo": "fijo",
+   "pruebas": {
+    "sin_fecha": {
+     "params": {
+      "limit": 100,
+      "offset": 0
+     },
+     "http": 400,
+     "seg": 1.5,
+     "error": "{\"error\":\"Debe incluir todos los parámetros obligatorios.\"}"
+    }
+   }
+  },
+  {
+   "servicio": "operacion",
+   "path": "reduccion/v1/generacion",
+   "prioridad": "alta",
+   "tipo": "fijo",
+   "pruebas": {
+    "sin_fecha": {
+     "params": {
+      "page": 1
+     },
+     "http": 404,
+     "seg": 0.7,
+     "error": "No Mapping Rule matched"
+    }
+   }
+  },
+  {
+   "servicio": "operacion",
+   "path": "reduccion/v1/consumo",
+   "prioridad": "alta",
+   "tipo": "fijo",
+   "pruebas": {
+    "sin_fecha": {
+     "params": {
+      "page": 1
+     },
+     "http": 404,
+     "seg": 1.3,
+     "error": "No Mapping Rule matched"
+    }
+   }
+  },
+  {
+   "servicio": "operacion",
+   "path": "servicios-complementarios/v1",
+   "prioridad": "media",
+   "tipo": "op_rango",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "initDate": "2026-11-18",
+      "endDate": "2026-11-18",
+      "page": 1,
+      "pageSize": 100
+     },
+     "http": 200,
+     "seg": 0.9,
+     "n": 100,
+     "forma": "objeto con 'content'",
+     "meta": {
+      "totalPages": 3,
+      "page": 1,
+      "pageSize": 100,
+      "totalElements": 206
+     },
+     "campos": [
+      "fecha",
+      "inicioPeriodo",
+      "finPeriodo",
+      "instruccionSscc",
+      "idConfiguracion",
+      "centralSubestacion",
+      "barraCt",
+      "centralUnidad",
+      "configuracionPanio",
+      "disponibilidad",
+      "baja",
+      "sube",
+      "unidadMedida",
+      "motivo",
+      "comentario",
+      "estadoOperacional",
+      "estadoSabana",
+      "sabana",
+      "fechaAccion",
+      "valores",
+      "usuario",
+      "accion"
+     ],
+     "ejemplo": {
+      "fecha": "2026-11-18",
+      "inicioPeriodo": "08:40:00",
+      "finPeriodo": "08:52:00",
+      "instruccionSscc": "CTF(-)",
+      "idConfiguracion": 1080,
+      "centralSubestacion": "RALCO",
+      "barraCt": null,
+      "centralUnidad": "RALCO-1",
+      "configuracionPanio": "RALCO_sinv",
+      "disponibilidad": null,
+      "baja": 11.0,
+      "sube": null,
+      "unidadMedida": "MW",
+      "motivo": "Activación en control Terciario de frecuencia CTF (-).",
+      "comentario": null,
+      "estadoOperacional": null,
+      "estadoSabana": "ABIERTA",
+      "sabana": 1511,
+      "fechaAccion": "2026-11-18",
+      "valores": "{'unidad_medida': 'MW', 'sscc_baja': '11', 'fin_periodo': '08:52:00', 'configuracion': 'RALCO-1', 'inicio_periodo': '08:40:00', 'motivo': 'Activación en control…",
+      "usuario": "Fabian Sepulveda",
+      "accion": null
+     },
+     "fecha_min": "2026-11-18",
+     "fecha_max": "2026-11-18"
+    },
+    "ayer": {
+     "params": {
+      "initDate": "2026-11-17",
+      "endDate": "2026-11-17",
+      "page": 1,
+      "pageSize": 100
+     },
+     "http": 200,
+     "seg": 2.0,
+     "n": 100,
+     "forma": "objeto con 'content'",
+     "meta": {
+      "totalPages": 3,
+      "page": 1,
+      "pageSize": 100,
+      "totalElements": 234
+     },
+     "campos": [
+      "fecha",
+      "inicioPeriodo",
+      "finPeriodo",
+      "instruccionSscc",
+      "idConfiguracion",
+      "centralSubestacion",
+      "barraCt",
+      "centralUnidad",
+      "configuracionPanio",
+      "disponibilidad",
+      "baja",
+      "sube",
+      "unidadMedida",
+      "motivo",
+      "comentario",
+      "estadoOperacional",
+      "estadoSabana",
+      "sabana",
+      "fechaAccion",
+      "valores",
+      "usuario",
+      "accion"
+     ],
+     "ejemplo": {
+      "fecha": "2026-11-17",
+      "inicioPeriodo": "09:02:00",
+      "finPeriodo": "09:28:00",
+      "instruccionSscc": "CT",
+      "idConfiguracion": 1126,
+      "centralSubestacion": "PFV-WILLKA",
+      "barraCt": "PARINACOTA 220 kV",
+      "centralUnidad": "-",
+      "configuracionPanio": "-",
+      "disponibilidad": null,
+      "baja": 20.0,
+      "sube": null,
+      "unidadMedida": "MVAR",
+      "motivo": "SSCC Control de Tensión",
+      "comentario": null,
+      "estadoOperacional": null,
+      "estadoSabana": "CERRADA PENDIENTE",
+      "sabana": 1510,
+      "fechaAccion": "2026-11-17",
+      "valores": "{'fin_periodo': \"' ' -> cambio a -> 09:28:00\"}",
+      "usuario": "Fabian Sepulveda",
+      "accion": null
+     },
+     "fecha_min": "2026-11-17",
+     "fecha_max": "2026-11-18"
+    },
+    "hace_7d": {
+     "params": {
+      "initDate": "2026-11-11",
+      "endDate": "2026-11-11",
+      "page": 1,
+      "pageSize": 100
+     },
+     "http": 200,
+     "seg": 2.0,
+     "n": 100,
+     "forma": "objeto con 'content'",
+     "meta": {
+      "totalPages": 3,
+      "page": 1,
+      "pageSize": 100,
+      "totalElements": 245
+     },
+     "campos": [
+      "fecha",
+      "inicioPeriodo",
+      "finPeriodo",
+      "instruccionSscc",
+      "idConfiguracion",
+      "centralSubestacion",
+      "barraCt",
+      "centralUnidad",
+      "configuracionPanio",
+      "disponibilidad",
+      "baja",
+      "sube",
+      "unidadMedida",
+      "motivo",
+      "comentario",
+      "estadoOperacional",
+      "estadoSabana",
+      "sabana",
+      "fechaAccion",
+      "valores",
+      "usuario",
+      "accion"
+     ],
+     "ejemplo": {
+      "fecha": "2026-11-11",
+      "inicioPeriodo": "08:00:00",
+      "finPeriodo": "11:10:00",
+      "instruccionSscc": "CPF(-)",
+      "idConfiguracion": 1080,
+      "centralSubestacion": "RALCO",
+      "barraCt": null,
+      "centralUnidad": "RALCO-1",
+      "configuracionPanio": "RALCO_sinv",
+      "disponibilidad": null,
+      "baja": null,
+      "sube": null,
+      "unidadMedida": "MW",
+      "motivo": "Participación en control Primario de frecuencia CPF (-).",
+      "comentario": null,
+      "estadoOperacional": null,
+      "estadoSabana": "CERRADA PENDIENTE",
+      "sabana": 1504,
+      "fechaAccion": null,
+      "valores": null,
+      "usuario": "Mauricio Aguirre",
+      "accion": null
+     },
+     "fecha_min": "2026-11-11",
+     "fecha_max": "2026-11-11"
+    }
+   },
+   "paginacion": {
+    "totalPages": 3,
+    "base": "desde 1",
+    "ultima_pagina": {
+     "page": 3,
+     "http": 400,
+     "n": null,
+     "fecha_min": null,
+     "fecha_max": null
+    }
+   }
+  },
+  {
+   "servicio": "operacion",
+   "path": "operativos/v1/estados",
+   "prioridad": "media",
+   "tipo": "fijo",
+   "pruebas": {
+    "sin_fecha": {
+     "params": {
+      "page": 1
+     },
+     "http": 200,
+     "seg": 2.4,
+     "n": 10,
+     "forma": "objeto con 'content'",
+     "meta": {
+      "totalPages": 3,
+      "page": 1,
+      "pageSize": 10,
+      "totalElements": 21
+     },
+     "campos": [
+      "id",
+      "active",
+      "created",
+      "name",
+      "modified",
+      "modules"
+     ],
+     "ejemplo": {
+      "id": "569424cc8ae3783d68aa5453",
+      "active": true,
+      "created": "2016-02-15T04:30:51.929+00:00",
+      "name": "DRO (Unidad desconectada con Restricción Operativa)",
+      "modified": "2016-04-14T12:37:52.216+00:00",
+      "modules": [
+       "desconexion_intervencion",
+       "informe_fallas",
+       "reduccion_consumo"
+      ]
+     },
+     "fecha_min": "2016-02-15 04:30:51",
+     "fecha_max": "2016-03-29 14:03:06"
+    }
+   }
+  },
+  {
+   "servicio": "operacion",
+   "path": "reportes/v3/generation",
+   "prioridad": "media",
+   "tipo": "op_fecha",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "date": "2026-11-18",
+      "page": 1
+     },
+     "http": 404,
+     "seg": 2.7,
+     "error": "{\"message\":\"NotFoundException\",\"detail\":\"No records found\"}"
+    },
+    "ayer": {
+     "params": {
+      "date": "2026-11-17",
+      "page": 1
+     },
+     "http": 400,
+     "seg": 1.8,
+     "error": "{\"message\":\"BadRequestException\",\"detail\":\"Exceeded the maximum number of pages\"}"
+    },
+    "hace_7d": {
+     "params": {
+      "date": "2026-11-11",
+      "page": 1
+     },
+     "http": 400,
+     "seg": 2.0,
+     "error": "{\"message\":\"BadRequestException\",\"detail\":\"Exceeded the maximum number of pages\"}"
+    }
+   }
+  },
+  {
+   "servicio": "operacion",
+   "path": "reportes/v3/deviation",
+   "prioridad": "media",
+   "tipo": "op_fecha",
+   "pruebas": {
+    "hoy": {
+     "params": {
+      "date": "2026-11-18",
+      "page": 1
+     },
+     "http": 500,
+     "seg": 5.2,
+     "error": "{\"message\":\"NullPointerException\",\"detail\":\"Cannot invoke \\\"cl.coordinador.apireport.model.entity.ReportReportEntity.getIsApproved()\\\" because \\\"report\\\" is null\"}"
+    },
+    "ayer": {
+     "params": {
+      "date": "2026-11-17",
+      "page": 1
+     },
+     "http": 404,
+     "seg": 2.0,
+     "error": "{\"message\":\"NotFoundException\",\"detail\":\"report in this date not be approved\"}"
+    },
+    "hace_7d": {
+     "params": {
+      "date": "2026-11-11",
+      "page": 1
+     },
+     "http": 404,
+     "seg": 2.7,
+     "error": "{\"message\":\"NotFoundException\",\"detail\":\"No records found\"}"
+    }
+   }
+  },
+  {
+   "servicio": "operacion",
+   "path": "unidades-generadoras/v1",
+   "prioridad": "extra",
+   "tipo": "fijo",
+   "pruebas": {
+    "sin_fecha": {
+     "params": {
+      "page": 1
+     },
+     "http": 502,
+     "seg": 5.5,
+     "error": "<html>\r\n<head><title>502 Bad Gateway</title></head>\r\n<body>\r\n<center><h1>502 Bad Gateway</h1></center>\r\n<hr><center>openresty</center>\r\n</body>\r\n</html>\r\n"
+    }
+   }
+  },
+  {
+   "servicio": "operacion",
+   "path": "mantenimiento-mayor/v1",
+   "prioridad": "extra",
+   "tipo": "fijo",
+   "pruebas": {
+    "sin_fecha": {
+     "params": {
+      "page": 1,
+      "fechaInicioLocalGte": "2026-11-11"
+     },
+     "http": 404,
+     "seg": 3.8,
+     "error": "{\"message\":\"NotFoundException\",\"detail\":\"no records found\"}"
+    }
+   }
+  }
+ ]
+}
