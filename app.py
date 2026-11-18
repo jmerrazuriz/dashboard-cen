@@ -22,11 +22,27 @@ from cen import endpoints as E  # noqa: E402
 from cen import transform as T  # noqa: E402
 from cen import charts as CH  # noqa: E402
 from cen.cache import SinCache, modo_solo_cache  # noqa: E402
+from cen.client import revisar_clave  # noqa: E402
 
 modo_solo_cache(False)  # cada ejecución parte consultando normalmente (ver precarga más abajo)
 from streamlit_echarts import st_echarts  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+
+# ---- claves de la API: si faltan o tienen mal formato, se explica aquí en vez de fallar con 403 en cada consulta
+_problema_sip = revisar_clave("sip")
+if _problema_sip:
+    st.error(f"**No se puede consultar la API del Coordinador.** {_problema_sip}")
+    st.info("Corrígela en *Manage app → Settings → Secrets* (en local, en el archivo `.env`) y reinicia la app "
+            "con *Manage app → Reboot app*.")
+    st.stop()
+_problema_op = revisar_clave("operacion")
+# un solo contenedor al inicio de la página para avisar de claves rechazadas, sin repetir el error en cada bloque
+AVISO_AUTH = st.container()
+_auth_mostrado = False
+if _problema_op:
+    AVISO_AUTH.warning(f"{_problema_op} Las secciones que usan el servicio Operación no funcionarán "
+                       "(reduccion, servicios complementarios, reporte de generación).")
 
 # ECharts se dibuja con tamaño 0 si nace en una pestaña o expander oculto y no se redibuja solo al
 # mostrarse. Este script observa los contenedores de gráficos y, cuando cambian de tamaño, emite un
@@ -77,6 +93,19 @@ def registrar(nombre: str, fetched_at: float | None, ultimo_dato=None, nota: str
     FRESCURA[nombre] = (fetched_at, ultimo_dato, nota)
 
 
+def avisar_auth(detalle: str) -> None:
+    """Avisa UNA vez por ejecución que la API rechazó la clave (403), con la explicación, arriba de la página."""
+    global _auth_mostrado
+    if _auth_mostrado:
+        return
+    _auth_mostrado = True
+    AVISO_AUTH.error(
+        f"**La API rechazó la clave (403).** {detalle}. Revisa que el valor de `CEN_USER_KEY` (y de "
+        "`CEN_OPERACION_KEY`) en los Secrets sea el de su servicio —son claves distintas— y que se copió "
+        "completo; luego haz *Reboot app*. Si el largo es 32 y el error persiste, la clave puede estar "
+        "desactivada en el portal del Coordinador.")
+
+
 def safe(nombre: str, fn, *args, opcional: bool = False, **kwargs):
     """Ejecuta una consulta; si falla, muestra aviso y devuelve None."""
     try:
@@ -87,6 +116,10 @@ def safe(nombre: str, fn, *args, opcional: bool = False, **kwargs):
     except SinCache:  # se está descargando en segundo plano (día pasado): se muestra al estar lista
         return None
     except Exception as exc:
+        if "Autenticación rechazada" in str(exc):
+            avisar_auth(str(exc))
+            logging.error("%s: %s", nombre, exc)
+            return None
         (st.info if opcional else st.error)(f"{nombre}: no disponible por ahora ({exc})")
         logging.exception(nombre)
         return None
@@ -257,7 +290,10 @@ if barras:
     with st.spinner(f"Consultando CMg en línea de {len(barras)} barra(s)…"):
         cmg, cmg_fetched, cmg_err = E.cmg_online_multi(barras, DIA_ANT, DIA, force=force)
     for e in cmg_err:
-        st.error(f"CMg en línea: {e}")
+        if "Autenticación rechazada" in e:
+            avisar_auth(e)
+        else:
+            st.error(f"CMg en línea: {e}")
     registrar("CMg en línea", cmg_fetched, cmg["ts"].max() if not cmg.empty else None)
 
 # ============================================================== KPIs

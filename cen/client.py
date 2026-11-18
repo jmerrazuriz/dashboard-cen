@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 import threading
 import time
 from pathlib import Path
@@ -34,6 +35,31 @@ class CENError(RuntimeError):
     pass
 
 
+RE_CLAVE = re.compile(r"^[0-9a-fA-F]{32}$")  # las claves del CEN son 32 caracteres hexadecimales
+
+
+def limpiar_clave(valor: str | None) -> str:
+    """Quita espacios, saltos de línea y comillas/corchetes que se cuelan al pegar un secreto."""
+    basura = chr(34) + chr(39) + chr(96) + "<>[]() " + chr(9) + chr(13) + chr(10)
+    return str(valor or "").strip().strip(basura)
+
+
+def revisar_clave(service: str) -> str | None:
+    """None si la clave del servicio luce bien; si no, un mensaje con el problema.
+
+    El mensaje nunca incluye la clave (ni parte de ella), solo su largo, para poder mostrarlo en pantalla.
+    """
+    var = SERVICIOS[service][1]
+    v = limpiar_clave(os.getenv(var))
+    if not v:
+        return f"Falta la clave {var}: no está definida en los Secrets (o en .env)."
+    if not RE_CLAVE.match(v):
+        return (f"La clave {var} no tiene el formato esperado: tiene {len(v)} caracteres y debería tener 32, "
+                "solo letras a–f y números. Vuelve a copiar el valor completo desde el portal del Coordinador, "
+                "sin texto adicional.")
+    return None
+
+
 class CENClient:
     def __init__(
         self,
@@ -49,7 +75,8 @@ class CENClient:
             raise CENError(f"Servicio desconocido: {service} (opciones: {', '.join(SERVICIOS)})")
         url_servicio, var_clave = SERVICIOS[service]
         self.service = service
-        self.user_key = user_key or os.getenv(var_clave)
+        self.var_clave = var_clave
+        self.user_key = limpiar_clave(user_key or os.getenv(var_clave))
         if not self.user_key:
             raise CENError(f"Falta {var_clave} (defínela en .env)")
         self.base_url = (base_url or url_servicio).rstrip("/")
@@ -113,7 +140,9 @@ class CENClient:
         if resp.status_code == 200:
             return resp.json()
         if resp.status_code == 403:
-            raise CENError(f"Autenticación rechazada (403) en {path}: {resp.text[:200]}")
+            raise CENError(f"Autenticación rechazada (403) en {path}: {resp.text[:200]} "
+                           f"[la clave de {self.service} cargada en {self.var_clave} tiene "
+                           f"{len(self.user_key)} caracteres]")
         if resp.status_code == 429 or resp.status_code >= 500:
             raise CENError(f"HTTP {resp.status_code} en {path} tras reintentos")
         raise CENError(f"HTTP {resp.status_code} en {path}: {resp.text[:200]}")

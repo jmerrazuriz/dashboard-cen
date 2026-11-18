@@ -60,3 +60,11 @@ Notas del despliegue público:
 - `CEN_MODO_PUBLICO=1` oculta «Forzar actualización» y limita a 6 barras por consulta: todos los visitantes comparten las mismas claves y la API responde 429 con poco uso.
 - El disco es efímero: la caché (`.cache/`) se pierde al reiniciar o dormir la app, y la primera visita de cada día vuelve a descargar los datos (varios minutos por el límite de la API; la página muestra el progreso).
 - Si una clave se expone por error, pide otra en <https://portal.api.coordinador.cl/admin/applications> y actualiza el Secret.
+
+### Solución de problemas: «La API rechazó la clave (403)»
+
+La app te dice el **largo** de la clave cargada (nunca su contenido). Una clave del CEN tiene **32 caracteres** (letras a–f y números).
+
+- **Menos o más de 32:** el valor está incompleto o con texto de más. Vuelve a copiarlo desde el portal, en *Settings → Secrets*, entre comillas y sin espacios.
+- **32 y sigue el 403:** revisa que no hayas cruzado las claves (`CEN_USER_KEY` es del servicio *Información Pública* y `CEN_OPERACION_KEY` del servicio *Operación*) o que la clave siga activa en el portal.
+- Después de corregir los Secrets, usa *Manage app → Reboot app*: tras un error, la app no reintenta durante unos minutos.
