@@ -11,7 +11,7 @@ import pandas as pd
 
 from . import transform as T
 from .cache import Cached, SinCache, cached, peek
-from .client import CENClient, default_client
+from .client import PRIO_BAJA, PRIO_FONDO, PRIO_PAGINA, CENClient, default_client, fijar_prioridad, reservar
 
 log = logging.getLogger(__name__)
 
@@ -224,6 +224,7 @@ def en_segundo_plano(namespace: str, key: str, fn, *args, **kwargs) -> tuple[Cac
         return None, f"error: {err}"
 
     def run():
+        fijar_prioridad(PRIO_FONDO)  # cede el turno a la precarga del día que se está mirando
         try:
             fn(*args, **kwargs)
         except Exception as exc:  # se informa en la siguiente llamada
@@ -271,6 +272,12 @@ class Precarga:
 
 
 _PRECARGAS: dict[tuple, Precarga] = {}
+_DIA_ACTIVO: list[date | None] = [None]  # día que se está mirando (el último elegido en la página)
+
+
+def marcar_dia_activo(dia: date) -> None:
+    """La página lo llama en cada ejecución: la precarga de ese día pasa primero; las de otros días esperan."""
+    _DIA_ACTIVO[0] = dia
 REINTENTO_PRECARGA = 5 * 60  # s: si terminó con errores, se reintenta pasado este tiempo
 ESPERA_REINTENTO = 20  # s de pausa antes de reintentar las fuentes que fallaron
 
@@ -284,7 +291,8 @@ def _tareas_dia(dia: date, barras: list[str]) -> list[tuple]:
     return t
 
 
-def precargar(clave: tuple, tareas: list[tuple], dia: date, espera: float = 0.6) -> Precarga:
+def precargar(clave: tuple, tareas: list[tuple], dia: date, espera: float = 0.6,
+              prioridad: int = PRIO_PAGINA) -> Precarga:
     """Lanza (una vez por ``clave``) un hilo que ejecuta ``tareas`` = [(nombre, fn, args), ...] en orden.
 
     Cada tarea deja su resultado en caché. Las que fallan se reintentan una vez tras una pausa; si aún
@@ -297,7 +305,16 @@ def precargar(clave: tuple, tareas: list[tuple], dia: date, espera: float = 0.6)
     est = Precarga(dia=dia, total=len(tareas))
     _PRECARGAS[clave] = est
 
+    def prio() -> int:  # si el usuario cambió de día, esta precarga deja pasar a la del día nuevo
+        return prioridad if _DIA_ACTIVO[0] in (None, dia) else PRIO_BAJA
+
     def run():
+        fijar_prioridad(prio)
+        # mientras sea el día que se mira, las descargas de fondo esperan a que termine
+        with reservar(lambda: prio() == PRIO_PAGINA):
+            _ejecutar()
+
+    def _ejecutar():
         try:
             fallidas = []
             for nombre, fn, args in tareas:
@@ -344,7 +361,7 @@ def historial_cmg(barras: list[str], hasta: date, dias: int = DIAS_HISTORIAL) ->
     """
     desde, fin = hasta - timedelta(days=dias), hasta - timedelta(days=1)
     tareas = [(f"CMg {dias} días {b.split('_')[0]}", cmg_online, (b, desde, fin)) for b in barras]
-    est = precargar(("historial", hasta, tuple(barras)), tareas, hasta, espera=0.3)
+    est = precargar(("historial", hasta, tuple(barras)), tareas, hasta, espera=0.3, prioridad=PRIO_BAJA)
     dfs = []
     for b in barras:
         r = peek("cmg_online", f"{b}_{_d(desde)}_{_d(fin)}", ttl=None)

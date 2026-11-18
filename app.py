@@ -278,6 +278,7 @@ PCP_DIA = DIA_SIG if ES_HOY else DIA  # hoy: programa de mañana; pasado: lo pro
 # el límite de la API). Mientras tanto la página no consulta la API: muestra lo que ya está guardado y
 # se actualiza sola cada 30 s hasta completar.
 CARGANDO_DIA = False
+E.marcar_dia_activo(DIA)  # las consultas de este día pasan antes que las de días que ya no se miran
 if not ES_HOY:
     precarga = E.precargar_dia(DIA, barras)
     if precarga.activo:

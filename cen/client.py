@@ -60,6 +60,83 @@ def revisar_clave(service: str) -> str | None:
     return None
 
 
+# ------------------------------------------------------------- prioridades
+# Todas las consultas pasan de a una (límite de la API). Cuando varias esperan turno, pasa primero la de
+# menor prioridad (0 = lo que la página necesita ya; 1 = descargas en segundo plano; 2 = lo que puede
+# esperar: historial, días que ya no se están mirando). A igual prioridad, por orden de llegada.
+PRIO_PAGINA, PRIO_FONDO, PRIO_BAJA = 0, 1, 2
+_prio_local = threading.local()
+
+
+def fijar_prioridad(prioridad) -> None:
+    """Prioridad de las consultas del hilo actual: un entero o una función sin argumentos que lo devuelve
+    (se evalúa mientras espera turno, así una descarga puede bajar de prioridad si el usuario cambia de día)."""
+    _prio_local.valor = prioridad
+
+
+def prioridad_actual() -> int:
+    p = getattr(_prio_local, "valor", PRIO_PAGINA)
+    return int(p() if callable(p) else p)
+
+
+# Reservas: (hilo, función sin argumentos). Mientras una esté activa, solo pasan consultas de prioridad 0,
+# salvo que ese hilo esté en pausa por un 429 (entonces las demás aprovechan el tiempo muerto).
+_RESERVAS: set = set()
+_EN_PAUSA: set[int] = set()
+
+
+class reservar:
+    """Mientras dure el bloque (y ``activa()`` dé True), las consultas de prioridad > 0 no empiezan:
+    así la precarga del día que se mira no espera, entre consulta y consulta, a las descargas de fondo."""
+
+    def __init__(self, activa=lambda: True):
+        self.entrada = (threading.get_ident(), activa)
+
+    def __enter__(self):
+        self.entrada = (threading.get_ident(), self.entrada[1])
+        _RESERVAS.add(self.entrada)
+        return self
+
+    def __exit__(self, *exc):
+        _RESERVAS.discard(self.entrada)
+
+
+def _reservado() -> bool:
+    return any(hilo not in _EN_PAUSA and f() for hilo, f in list(_RESERVAS))
+
+
+class ColaPrioridad:
+    """Candado que, al liberarse, se lo entrega al que espera con menor prioridad (y luego al más antiguo)."""
+
+    def __init__(self) -> None:
+        self._cond = threading.Condition()
+        self._ocupado = False
+        self._esperando: list[tuple[int, object]] = []
+        self._seq = 0
+
+    def __enter__(self):
+        valor = getattr(_prio_local, "valor", PRIO_PAGINA)
+        fn = valor if callable(valor) else (lambda v=valor: v)
+        with self._cond:
+            self._seq += 1
+            yo = (self._seq, fn)
+            self._esperando.append(yo)
+            try:
+                # timeout: las prioridades dinámicas se reevalúan aunque nadie avise
+                while (self._ocupado or min(self._esperando, key=lambda e: (int(e[1]()), e[0])) is not yo
+                       or (int(fn()) > PRIO_PAGINA and _reservado())):
+                    self._cond.wait(timeout=1.0)
+            finally:
+                self._esperando.remove(yo)
+            self._ocupado = True
+        return self
+
+    def __exit__(self, *exc):
+        with self._cond:
+            self._ocupado = False
+            self._cond.notify_all()
+
+
 class CENClient:
     def __init__(
         self,
@@ -86,8 +163,12 @@ class CENClient:
         self.timeout = timeout
         self.max_retries = max_retries
         self.session = requests.Session()
-        self._lock = threading.Lock()  # garantiza consultas en secuencia
+        self._lock = ColaPrioridad()  # consultas en secuencia, por prioridad
         self._last_request = 0.0
+        # Ritmo por endpoint: algunos (p. ej. el CMg en línea) tienen un límite propio más estricto. Tras un
+        # 429 solo ese endpoint se pausa y se espacia; los demás siguen.
+        self._ruta_proxima: dict[str, float] = {}   # ruta -> instante (monotonic) desde el que se puede consultar
+        self._ruta_intervalo: dict[str, float] = {}  # ruta -> separación mínima entre consultas (s)
         self.request_count = 0
         self.retry_count = 0
 
@@ -100,9 +181,23 @@ class CENClient:
         params = {k: v for k, v in params.items() if v is not None}
         params["user_key"] = self.user_key
         url = f"{self.base_url}/{path.lstrip('/')}"
-        with self._lock:
-            delay = 2.0
-            for attempt in range(1, self.max_retries + 1):
+        # El turno se toma por intento, no por consulta completa: durante la pausa de un reintento la cola
+        # queda libre, y al terminar la pausa pasa primero lo más prioritario (no el que recibió el error).
+        ruta = path.split("?")[0]
+        delay = 2.0
+        intentos_429 = 0
+        attempt = 0
+        while True:
+            attempt += 1
+            espera_ruta = self._ruta_proxima.get(ruta, 0.0) - time.monotonic()
+            if espera_ruta > 0:  # pausa propia de este endpoint, fuera de la cola
+                _EN_PAUSA.add(threading.get_ident())
+                try:
+                    time.sleep(espera_ruta)
+                finally:
+                    _EN_PAUSA.discard(threading.get_ident())
+            pausa_propia = 0.0  # 5xx / red: solo esta consulta espera
+            with self._lock:
                 wait = self.interval - (time.monotonic() - self._last_request)
                 if wait > 0:
                     time.sleep(wait)
@@ -111,29 +206,40 @@ class CENClient:
                 try:
                     resp = self.session.get(url, params=params, timeout=self.timeout)
                 except requests.RequestException as exc:
-                    if attempt == self.max_retries:
+                    if attempt >= self.max_retries:
                         raise CENError(f"Error de red en {path}: {exc}") from exc
                     log.warning("Error de red en %s (%s); reintento en %.0fs", path, exc, delay)
+                    pausa_propia = delay
                 else:
+                    sep = self._ruta_intervalo.get(ruta, 0.0)
                     if resp.status_code == 200:
-                        # relaja de a poco el throttle adaptativo
+                        # relaja de a poco el throttle adaptativo (global y del endpoint)
                         self.interval = max(self.min_interval, self.interval * 0.9)
+                        if sep:
+                            self._ruta_intervalo[ruta] = sep = sep * 0.9 if sep > 1 else 0.0
+                            self._ruta_proxima[ruta] = time.monotonic() + sep
                         return resp
                     if resp.status_code == 429:
-                        # throttle adaptativo: el límite real de la API no está documentado
-                        self.interval = min(self.max_interval, max(self.interval * 1.5, 3.0))
+                        # límite no documentado: se espacia ese endpoint (hasta 30 s entre consultas) y se
+                        # reintenta con pausas crecientes (2, 4, 8, 16, 30, 30… s; hasta ~2 min en total)
+                        intentos_429 += 1
+                        self._ruta_intervalo[ruta] = min(30.0, max(sep * 1.5, 5.0))
+                        if intentos_429 >= self.max_retries + 3:
+                            return resp
+                        log.warning("HTTP 429 en %s; reintento en %.0fs", path, delay)
+                        self._ruta_proxima[ruta] = time.monotonic() + max(delay, self._ruta_intervalo[ruta])
                     elif resp.status_code < 500:
                         return resp  # 4xx distinto de 429: no tiene sentido reintentar
-                    # 5xx (p. ej. 502 cuando el servicio está caído): un solo reintento, no 5
-                    limite = self.max_retries if resp.status_code == 429 else min(2, self.max_retries)
-                    if attempt >= limite:
-                        return resp
-                    log.warning("HTTP %s en %s; reintento en %.0fs", resp.status_code, path, delay)
+                    else:
+                        # 5xx (p. ej. 502 cuando el servicio está caído): un solo reintento, no 5
+                        if attempt >= min(2, self.max_retries):
+                            return resp
+                        log.warning("HTTP %s en %s; reintento en %.0fs", resp.status_code, path, delay)
+                        pausa_propia = delay
                 self.retry_count += 1
-                time.sleep(delay)
-                self._last_request = time.monotonic()
-                delay *= 2
-        raise CENError("inalcanzable")
+            if pausa_propia:
+                time.sleep(pausa_propia)
+            delay = min(delay * 2, 30.0)
 
     def get(self, path: str, **params: Any) -> Any:
         resp = self.request(path, **params)

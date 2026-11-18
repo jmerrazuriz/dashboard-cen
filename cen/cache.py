@@ -166,6 +166,8 @@ def cached(namespace: str, key: str, fetch: Callable[[], Any], ttl: float | None
         hilo = _REFRESCOS.get(clave)
         if hilo is None or not hilo.is_alive():
             def run():
+                from .client import PRIO_FONDO, fijar_prioridad
+                fijar_prioridad(PRIO_FONDO)
                 try:
                     _store(pq, js, fetch())
                     _FALLOS.pop(clave, None)
