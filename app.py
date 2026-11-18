@@ -74,6 +74,46 @@ components.html("""
 </script>
 """, height=0)
 
+# Recorrido guiado: assets/recorrido.js se inserta en la página principal (no en el iframe del componente)
+# y se inicia cada vez que st.session_state["tour_n"] aumenta (botón «Recorrido guiado» o aviso de bienvenida).
+_MOTOR_TOUR = (Path(__file__).parent / "assets" / "recorrido.js").read_text(encoding="utf-8")
+_HTML_TOUR = """<script>
+(function () {
+  var w = window.parent, d = w.document;
+  if (!w.cenTour || w.cenTour.version !== 4) {
+    var s = d.createElement("script");
+    s.id = "cen-tour-js";
+    s.textContent = __MOTOR__;
+    d.head.appendChild(s);
+  }
+  if (!w.cenTour) return;
+  w.cenTour.configurar(__PASOS__);
+  var n = __N__;
+  if (n > 0 && w.__cenTourN !== n) { w.__cenTourN = n; w.cenTour.iniciar(); }
+})();
+</script>"""
+
+
+def recorrido_guiado() -> None:
+    import json as _json
+    html_tour = (_HTML_TOUR.replace("__MOTOR__", _json.dumps(_MOTOR_TOUR).replace("</", "<\\/"))
+                 .replace("__PASOS__", G.pasos_json())
+                 .replace("__N__", str(int(st.session_state.get("tour_n", 0)))))
+    components.html(html_tour, height=0)
+
+
+def abrir_guia() -> None:
+    """Inicia el recorrido guiado (sobre el dashboard) y oculta el aviso de bienvenida."""
+    st.session_state["tour_n"] = st.session_state.get("tour_n", 0) + 1
+    st.session_state["guia_aviso"] = False
+
+
+def cerrar_aviso_guia() -> None:
+    st.session_state["guia_aviso"] = False
+
+
+recorrido_guiado()
+
 AUTOREFRESH_MS = 15 * 60 * 1000
 # Despliegue público: oculta "Forzar actualización" y limita las barras por consulta, para que los
 # visitantes no agoten el límite de consultas de la API (todos comparten las mismas claves).
@@ -162,6 +202,8 @@ with st.sidebar:
                               "de cada día consulta la API (puede tardar 1–3 min por el límite de consultas).")
     cf2.button("Hoy", on_click=volver_a_hoy, disabled=DIA == HOY, width="stretch",
                help="Volver al día de hoy")
+    st.button("Recorrido guiado", on_click=abrir_guia, width="stretch",
+              help="Recorre cada parte del dashboard: qué muestra, cómo usarla y los límites de los datos.")
     if not MODO_PUBLICO and st.button(
             "Forzar actualización", help="Ignora la caché (respeta el límite de consultas: úsalo con moderación)"):
         force = True
@@ -269,6 +311,15 @@ st.markdown("""
 </style>""", unsafe_allow_html=True)
 
 
+def grafico(opciones: dict, height: str, key: str, tour: str | None = None) -> None:
+    """st_echarts; con ``tour``, dentro de un contenedor ``tour_<tour>`` que el recorrido guiado enmarca."""
+    if tour:
+        with st.container(key=f"tour_{tour}"):
+            st_echarts(opciones, height=height, key=key)
+    else:
+        st_echarts(opciones, height=height, key=key)
+
+
 def aviso_sin_datos(texto: str) -> None:
     st.info(f"Descargando datos del {DIA:%d-%m}…" if CARGANDO_DIA else texto)
 
@@ -306,19 +357,8 @@ if barras:
 st.title("Sistema Eléctrico Nacional")
 
 
-def abrir_guia() -> None:
-    """Lleva a la pestaña Guía, en su primer paso, y oculta el aviso de bienvenida."""
-    st.session_state["guia_paso"] = 0
-    st.session_state["pestana"] = "Guía"
-    st.session_state["guia_aviso"] = False
-
-
-def cerrar_aviso_guia() -> None:
-    st.session_state["guia_aviso"] = False
-
-
 # Contenedor FIJO: si el aviso desaparece, los elementos de abajo no se corren de lugar (si se corrieran, las
-# pestañas se reiniciarían en el navegador y no abrirían «Guía» al pulsar el botón).
+# pestañas se reiniciarían en el navegador).
 _ranura_aviso = st.empty()
 if st.session_state.get("guia_aviso", True):
     with _ranura_aviso.container(border=True):
@@ -500,7 +540,7 @@ NOTA_DEMANDA = ("Demanda nacional = generación bruta (`gen_bruta_mwh`), con ~10
                 "(~2–3 h de atraso), marcadas como **estimado**.")
 
 # ============================================================== pestañas
-PESTANAS = ["Resumen", "Baterías", "Costos marginales", "Generación por tecnología", "Demanda", "Operación", "Guía"]
+PESTANAS = ["Resumen", "Baterías", "Costos marginales", "Generación por tecnología", "Demanda", "Operación"]
 
 
 def ir_a(pestana: str) -> None:
@@ -521,7 +561,7 @@ st.markdown("""
 </style>""", unsafe_allow_html=True)
 
 # Pestañas con estado: "Resumen" por defecto; solo se dibuja la pestaña visible
-tab_res, tab_bat, tab_cmg, tab_gen, tab_dem, tab_op, tab_guia = st.tabs(PESTANAS, key="pestana", on_change="rerun")
+tab_res, tab_bat, tab_cmg, tab_gen, tab_dem, tab_op = st.tabs(PESTANAS, key="pestana", on_change="rerun")
 
 # ============================================================== Pestaña Resumen
 if tab_res.open:
@@ -529,7 +569,7 @@ if tab_res.open:
         titulo_enlace(f"Costos marginales — {DIA_ANT:%d-%m} y {DIA:%d-%m}", "Costos marginales", "ir_cmg")
         opt, notas, msg = preparar_cmg()
         if opt:
-            st_echarts(opt, height="430px", key="res_cmg")
+            grafico(opt, height="430px", key="res_cmg", tour="res_cmg")
             for n in notas:
                 st.caption(n)
         else:
@@ -592,9 +632,10 @@ if tab_bat.open:
             f"Horas ≈ 0 prom. {E.DIAS_HISTORIAL} días": pd.to_numeric(sp_dia["barra_transf"].map(prom["horas_cero"]),
                                                                     errors="coerce").round(1),
         })
-        st.dataframe(tabla, hide_index=True, width="stretch", column_config={
-            "Spread": st.column_config.ProgressColumn("Spread (USD/MWh)", format="%.1f", min_value=0,
-                                                      max_value=float(max(tabla["Spread"].max(), 1)))})
+        with st.container(key="tour_bat_spread"):
+            st.dataframe(tabla, hide_index=True, width="stretch", column_config={
+                "Spread": st.column_config.ProgressColumn("Spread (USD/MWh)", format="%.1f", min_value=0,
+                                                          max_value=float(max(tabla["Spread"].max(), 1)))})
         if est_hist.activo:
             st.progress(est_hist.hechos / max(est_hist.total, 1),
                         text=f"Descargando el historial de {E.DIAS_HISTORIAL} días en segundo plano: "
@@ -606,7 +647,7 @@ if tab_bat.open:
         opt = CH.opciones_mapa_cero(matriz, nombres, T.solar_horaria(gen_hoy, DIA), umbral_cero,
                                     color_solar=T.COLORES_TEC["Solar"])
         alto = opt.pop("_alto")
-        st_echarts(opt, height=f"{alto}px", key="bat_mapa")
+        grafico(opt, height=f"{alto}px", key="bat_mapa", tour="bat_mapa")
         st.caption(f"Cada celda indica cuántos minutos de esa hora el CMg estuvo bajo {umbral_cero:g} USD/MWh "
                    "(más oscuro = más tiempo). Coinciden con las horas de mayor generación solar: son las horas "
                    "baratas para cargar.")
@@ -628,8 +669,8 @@ if tab_bat.open:
         pcp_sel = programa_por_barra(pcp_r.value) if pcp_r is not None and not pcp_r.value.empty else None
         pid_sel = pid_del_dia(DIA, notas_prog)
         real = cmg_dia.assign(serie=cmg_dia["barra_transf"].map(CH.nombre_serie))
-        st_echarts(CH.opciones_cmg(real, "usd_mwh", "USD/MWh", pcp_sel, pid=pid_sel), height="460px",
-                   key="bat_prog")
+        grafico(CH.opciones_cmg(real, "usd_mwh", "USD/MWh", pcp_sel, pid=pid_sel), height="460px",
+                key="bat_prog", tour="bat_prog")
         st.caption("Línea continua: CMg real (en línea). Discontinua: lo que programó el PCP del día anterior. "
                    "Punteada: la reprogramación intradiaria (PID). La diferencia muestra cuánto se desvió el "
                    "precio de lo esperado.")
@@ -703,11 +744,11 @@ if tab_bat.open:
                     cuenta = (inicio.assign(h=inicio["ts"].dt.hour).groupby(["h", "accion"]).size()
                               .unstack(fill_value=0).reindex(range(24), fill_value=0))
                     st.markdown("**Inicios de carga y descarga por hora**")
-                    st_echarts(CH.opciones_barras_agrupadas(
+                    grafico(CH.opciones_barras_agrupadas(
                         CH.HORAS, {"Comienza carga": list(cuenta.get("Comienza carga", [0] * 24)),
                                    "Comienza descarga": list(cuenta.get("Comienza descarga", [0] * 24))},
                         {"Comienza carga": "#3CB89A", "Comienza descarga": "#F28E5C"}, "Instrucciones",
-                        nombre_png="bess_carga_descarga"), height="300px", key="bat_bess_horas")
+                        nombre_png="bess_carga_descarga"), height="300px", key="bat_bess_horas", tour="bat_bess")
                 st.caption("Cargan en las horas de sol (CMg ≈ 0) y descargan al atardecer, cuando el CMg sube. "
                            f"{len(ins)} instrucciones a {ins['central'].nunique()} sistemas de almacenamiento "
                            f"(de {len(todas)} instrucciones en total). Se publican con ~1 día de atraso"
@@ -724,7 +765,7 @@ if tab_cmg.open:
         if not opt:
             aviso_sin_datos(msg)
         else:
-            st_echarts(opt, height="520px", key="cmg_online")
+            grafico(opt, height="520px", key="cmg_online", tour="cmg_online")
             st.caption("Pasa el cursor sobre una curva (o su nombre en la leyenda) para destacarla; "
                        "clic en la leyenda para ocultarla; arrastra la barra inferior o usa Ctrl + rueda para hacer zoom.")
             for n in notas:
@@ -768,7 +809,7 @@ if tab_gen.open:
         c1, c2 = st.columns([5, 2])
         with c1:
             st.subheader(f"Generación horaria por tecnología — {DIA:%d-%m-%Y}")
-            st_echarts(preparar_gen(), height="500px", key="gen_tec")
+            grafico(preparar_gen(), height="500px", key="gen_tec", tour="gen_tec")
         with c2:
             st.subheader("Mix del día")
             ds_r = safe("Generación acumulada del día", E.daily_sum, DIA, force=force)
@@ -799,7 +840,7 @@ if tab_gen.open:
         )
         c1, c2 = st.container(), st.container()  # gráfico arriba, tabla abajo (ambos a lo ancho)
         with c1:
-            st_echarts(CH.opciones_top10(top, T.COLORES_TEC, col_e, unidad), height="440px",
+            grafico(CH.opciones_top10(top, T.COLORES_TEC, col_e, unidad), height="440px", tour="top10",
                        key=f"top10_{col_e}")
         with c2:
             tabla = top.rename(columns={"central": "Central", "propietario": "Empresa (propietario)",
@@ -947,7 +988,7 @@ if tab_dem.open:
                                    "color": "#E07B39", "estilo": "dashed",
                                    "data": CH.serie_horaria(pron["ts"], pron["mw"])})
 
-        st_echarts(CH.opciones_demanda(series_dem), height="500px", key="demanda")
+        grafico(CH.opciones_demanda(series_dem), height="500px", key="demanda", tour="demanda")
         st.caption(NOTA_DEMANDA)
 
         st.subheader(f"Desviación programado vs real — {DIA:%d-%m-%Y}")
@@ -1048,48 +1089,10 @@ if tab_op.open:
                        "rechazadas) que abarcan el día, creadas en los "
                        "30 días previos.")
 
-# ============================================================== Pestaña Guía
-def _mover_paso(delta: int) -> None:
-    st.session_state["guia_paso"] = max(0, min(len(G.PASOS) - 1, (st.session_state.get("guia_paso") or 0) + delta))
-
-
-if tab_guia.open:
-  with tab_guia:
-    st.session_state.setdefault("guia_paso", 0)
-    n_pasos = len(G.PASOS)
-    st.pills("Recorrido", options=list(range(n_pasos)), key="guia_paso", label_visibility="collapsed",
-             format_func=lambda k: f"{k + 1}. {G.PASOS[k]['corto']}")
-    i = min(max(st.session_state.get("guia_paso") or 0, 0), n_pasos - 1)  # pills permite desmarcar: se corrige
-    paso = G.PASOS[i]
-    st.progress((i + 1) / n_pasos, text=f"Paso {i + 1} de {n_pasos}")
-    st.header(paso["titulo"])
-    st.markdown(paso["que_hay"])
-
-    if paso["corto"] == "Datos y límites":  # el último paso trae tablas
-        tabla_html(pd.DataFrame(G.ATRASOS, columns=["Fuente", "Atraso observado", "Comentario"]), alto=460,
-                   anchos={"Fuente": "30%", "Atraso observado": "20%", "Comentario": "50%"})
-        st.markdown("**Lo que el CEN no entrega por su API** (probado):")
-        st.markdown("\n".join(f"- {x}" for x in G.NO_DISPONIBLE))
-
-    if paso["como_usar"].strip():
-        st.subheader("Cómo usarlo")
-        st.markdown(paso["como_usar"])
-    if paso["limites"].strip():
-        st.warning("**Límites de los datos del Coordinador**\n" + paso["limites"])
-
-    b1, b2, b3 = st.columns([1.2, 2, 1.2], vertical_alignment="center")
-    b1.button("← Anterior", on_click=_mover_paso, args=(-1,), disabled=i == 0, width="stretch")
-    if paso["pestana"]:
-        b2.button(f"Ir a «{paso['pestana']}»", on_click=ir_a, args=(paso["pestana"],), type="primary",
-                  width="stretch", key=f"guia_ir_{i}")
-    b3.button("Siguiente →", on_click=_mover_paso, args=(1,), disabled=i == n_pasos - 1, width="stretch")
-
-    with st.expander("Glosario"):
-        st.table(pd.DataFrame(G.GLOSARIO, columns=["Término", "Significado"]).set_index("Término"))
-
 # ============================================================== Pie de página
 st.divider()
-st.caption("**Frescura de los datos** · Fuente: API SIP del Coordinador Eléctrico Nacional")
+_frescura = st.container(key="tour_frescura")
+_frescura.caption("**Frescura de los datos** · Fuente: API SIP del Coordinador Eléctrico Nacional")
 filas = []
 for nombre, (fetched, ultimo, nota) in FRESCURA.items():
     filas.append({
@@ -1099,7 +1102,7 @@ for nombre, (fetched, ultimo, nota) in FRESCURA.items():
         "Atraso": atraso(ultimo) if ultimo is not None else (nota or "—"),
     })
 if filas:
-    st.dataframe(pd.DataFrame(filas), hide_index=True, width="stretch")
+    _frescura.dataframe(pd.DataFrame(filas), hide_index=True, width="stretch")
 from cen.cache import refrescando  # noqa: E402
 
 if refrescando():

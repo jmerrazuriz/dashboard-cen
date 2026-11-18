@@ -71,5 +71,7 @@ La app te dice el **largo** de la clave cargada (nunca su contenido). Una clave 
 
 ## Guía del usuario y favicon
 
-- La pestaña **Guía** es un recorrido de 8 pasos: qué hay en cada parte del dashboard, cómo usarla y los límites de los datos del Coordinador (atrasos y fuentes que la API no entrega). La primera vez que alguien entra aparece un aviso con el botón «Hacer el recorrido». El contenido está en `cen/guia.py`.
+- **Recorrido guiado** sobre el propio dashboard (17 pasos): cada paso abre la pestaña que corresponde, enmarca la sección real, oscurece el resto y muestra una ventana con qué hay, cómo usarla y los límites de los datos del Coordinador. Se inicia con «Hacer el recorrido» (aviso de la primera visita) o con «Recorrido guiado» en el panel lateral; teclado: → / Enter, ←, Esc.
+  - Contenido de los pasos: `cen/guia.py`. Motor (JavaScript propio, sin librerías externas): `assets/recorrido.js`.
+  - Las secciones se marcan en `app.py` con `st.container(key="tour_…")` o `grafico(..., tour="…")`; `tests/test_guia.py` falla si un paso apunta a una sección que no existe. Si se cambia el motor, sube su `version` (en el JS y en `app.py`) para que las páginas abiertas lo recarguen.
 - El favicon (una lupa mirando un rayo) está en `assets/favicon.png`; se regenera con `python scripts/generar_favicon.py`.
