@@ -165,6 +165,17 @@ y a <b>descargar</b> (atardecer) en cada hora, con el detalle por sistema.</p>""
 reconocen por su nombre («SAE», «BESS»).""",
     },
     {
+        "titulo": "Baterías: tablas de instrucciones",
+        "pestana": "Baterías",
+        "objetivo": ".st-key-tour_bat_bess_tablas",
+        "html": """
+<p><b>Izquierda</b>: cuántas instrucciones recibió cada sistema de almacenamiento y su despacho máximo (la
+barra permite comparar de un vistazo).</p>
+<p><b>Derecha</b>: cada instrucción con su hora, consigna, MW y la <b>acción</b> en color: comienza carga
+(verde), termina carga (azul), comienza descarga (ámbar), termina descarga (rojo).</p>""",
+        "limites": "La consigna es el código que usa el CEN; la API no publica su significado.",
+    },
+    {
         "titulo": "Costos marginales",
         "pestana": "Costos marginales",
         "objetivo": ".st-key-tour_cmg_online",
@@ -173,6 +184,16 @@ reconocen por su nombre («SAE», «BESS»).""",
 promedio). Arriba puedes cambiar a <b>Histórico</b> para ver el CMg real oficial de un rango de fechas.</p>""",
         "limites": """El CMg real oficial se publica con <b>semanas</b> de atraso. No hay datos de
 <b>congestiones de transmisión</b> en la API para explicar las alzas.""",
+    },
+    {
+        "titulo": "Costos marginales: tabla resumen",
+        "pestana": "Costos marginales",
+        "objetivo": ".st-key-tour_cmg_resumen",
+        "html": """
+<p>Por barra, para el día elegido: CMg <b>mínimo</b>, <b>máximo</b>, <b>promedio</b> (con barra para
+comparar entre barras), el <b>rango</b> máximo − mínimo y el <b>último</b> valor publicado. Se muestra en la
+moneda elegida en el panel lateral.</p>""",
+        "limites": "Hoy el resumen cubre solo hasta el último cuarto de hora publicado (~30–45 min de atraso).",
     },
     {
         "titulo": "Generación por tecnología",
@@ -194,6 +215,56 @@ factor de planta, cota de embalses, acumulados del mes y año, y programado vs r
 el dueño de esa central, marcado con *. El factor de planta temprano en el día no es representativo.""",
     },
     {
+        "titulo": "Tabla del top 10",
+        "pestana": "Generación por tecnología",
+        "objetivo": ".st-key-tour_top10_tabla",
+        "html": """
+<p>Las mismas 10 centrales con su <b>empresa propietaria</b>, tecnología (punto de color), generación,
+<b>% del total</b> del sistema (barra) y el <b>% acumulado</b>: cuánto suman entre todas hasta esa fila.</p>""",
+        "limites": """Las baterías no traen propietario en la API: si se llaman «SAE &lt;central&gt;» se muestra
+el dueño de esa central, marcado con *.""",
+    },
+    {
+        "titulo": "Factor de planta",
+        "pestana": "Generación por tecnología",
+        "objetivo": ".st-key-tour_factor",
+        "html": """
+<p>Cuánto de su capacidad instalada usó cada tecnología: <b>generación media ÷ capacidad</b>. La tabla
+muestra ambos valores, el factor (barra de 0 a 100 %) y cuántas horas se usaron en el cálculo.</p>""",
+        "limites": """Temprano en el día no es representativo (el solar sale ~0 antes del amanecer). La
+capacidad incluye unidades en revisión y no incluye baterías.""",
+    },
+    {
+        "titulo": "Embalses",
+        "pestana": "Generación por tecnología",
+        "objetivo": ".st-key-tour_embalses",
+        "html": """
+<p>Los 10 embalses principales: <b>llenado</b> (dónde está la cota entre el mínimo y el máximo de
+operación) y la cota actual en metros sobre el nivel del mar. Más agua embalsada suele significar más
+generación hidráulica disponible.</p>""",
+        "limites": "Se actualiza una vez al día.",
+    },
+    {
+        "titulo": "Generación acumulada del mes y del año",
+        "pestana": "Generación por tecnología",
+        "objetivo": ".st-key-tour_reporte",
+        "html": """
+<p>Reporte oficial del CEN por tecnología: generación del día, del mes y del año a la fecha (GWh), y la
+<b>participación de cada tecnología en el año</b>.</p>""",
+        "limites": "Se publica con ~1 día de atraso: al mirar hoy se muestra el reporte de ayer.",
+    },
+    {
+        "titulo": "Programado vs real por tecnología",
+        "pestana": "Generación por tecnología",
+        "objetivo": ".st-key-tour_gen_prog",
+        "html": """
+<p>Marca la casilla para comparar lo que el CEN <b>programó</b> generar con lo que realmente se generó, por
+tecnología: un gráfico de barras y una tabla con la <b>desviación</b> en MWh y % (verde = se generó más de lo
+programado; rojo = menos).</p>""",
+        "limites": """Usa el programa completo del CEN (~300.000 filas): la primera vez tarda varios minutos y
+queda guardado 12 h. Solo compara las horas con generación real.""",
+    },
+    {
         "titulo": "Demanda",
         "pestana": "Demanda",
         "objetivo": ".st-key-tour_demanda",
@@ -205,14 +276,45 @@ desviación programado vs real.</p>""",
 atraso. La demanda neta descuenta solar, eólica y pasada: no es la demanda del país.""",
     },
     {
-        "titulo": "Operación",
-        "pestana": "Operación",
-        "objetivo": "@panel",
+        "titulo": "Desviación de la demanda",
+        "pestana": "Demanda",
+        "objetivo": ".st-key-tour_dem_desv",
         "html": """
-<p>Lo que ocurre en la red el día elegido: <b>servicios complementarios</b> activados, <b>mantenimientos
-mayores</b> vigentes y <b>trabajos y desconexiones</b>. Las descripciones largas tienen «ver más».</p>""",
-        "limites": """Se consideran solicitudes de los 60 días (mantenimientos) y 30 días (trabajos) previos:
-una obra muy antigua puede no aparecer.""",
+<p>Elige el programa (<b>PCP</b> del día anterior o <b>PID</b> intradiario) y marca «Calcular desviación»: verás
+la desviación media, el error medio y la mayor desviación, y una tabla hora por hora (verde = demanda mayor
+que la programada; rojo = menor).</p>""",
+        "limites": """La demanda real es la generación bruta (incluye pérdidas), así que suele quedar algo sobre lo
+programado por barra. Hoy solo hay horas reales hasta ~10 h atrás.""",
+    },
+    {
+        "titulo": "Operación: servicios complementarios",
+        "pestana": "Operación",
+        "objetivo": ".st-key-tour_op_sscc",
+        "html": """
+<p>Ajustes reales que el CEN ordenó a las centrales para mantener la frecuencia de la red. <b>Izquierda</b>:
+resumen por tipo de servicio (verde = subir generación, rojo = bajar). <b>Derecha</b>: cada activación con
+su hora, unidad, MW y motivo.</p>""",
+        "limites": "Solo se publican las activaciones del servicio Operación del CEN (OpReal).",
+    },
+    {
+        "titulo": "Operación: mantenimientos mayores",
+        "pestana": "Operación",
+        "objetivo": ".st-key-tour_op_mant",
+        "html": """
+<p>Obras programadas en instalaciones del sistema que están vigentes el día elegido: periodo, instalación,
+<b>estado</b> (aprobado en verde, pendiente en ámbar), <b>riesgo</b> y si afecta a consumos. Las descripciones
+largas tienen «ver más».</p>""",
+        "limites": "Se consideran las solicitudes de los 60 días previos: una obra muy antigua puede no aparecer.",
+    },
+    {
+        "titulo": "Operación: trabajos y desconexiones",
+        "pestana": "Operación",
+        "objetivo": ".st-key-tour_op_trab",
+        "html": """
+<p>Arriba, cuántas solicitudes hay por tipo y elemento (subestación, línea, central). Abajo, cada trabajo
+vigente con su periodo, instalación, empresa y estado.</p>""",
+        "limites": """Se consideran las solicitudes de los 30 días previos y se excluyen las anuladas, los borradores y
+las rechazadas. Incluye muchas intervenciones menores.""",
     },
     {
         "titulo": "¿Qué tan frescos están los datos?",

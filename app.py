@@ -28,7 +28,8 @@ import sys  # noqa: E402
 import time  # noqa: E402
 
 # Módulos propios, en orden de dependencias (cada uno solo importa a los anteriores).
-_MODULOS_CEN = ("cen.client", "cen.cache", "cen.transform", "cen.charts", "cen.endpoints", "cen.guia")
+_MODULOS_CEN = ("cen.client", "cen.cache", "cen.transform", "cen.charts", "cen.endpoints", "cen.guia",
+                "cen.tablas")
 
 
 def _recargar_modulos_modificados() -> None:
@@ -57,6 +58,7 @@ from cen import charts as CH  # noqa: E402
 from cen.cache import SinCache, modo_solo_cache  # noqa: E402
 from cen.client import revisar_clave  # noqa: E402
 from cen import guia as G  # noqa: E402
+from cen import tablas as TB  # noqa: E402
 
 for _nombre in _MODULOS_CEN:  # marca de carga de los módulos recién importados (ver arriba)
     if _nombre in sys.modules and not hasattr(sys.modules[_nombre], "_cargado_en"):
@@ -112,7 +114,7 @@ _MOTOR_TOUR = (Path(__file__).parent / "assets" / "recorrido.js").read_text(enco
 _HTML_TOUR = """<script>
 (function () {
   var w = window.parent, d = w.document;
-  if (!w.cenTour || w.cenTour.version !== 4) {
+  if (!w.cenTour || w.cenTour.version !== 5) {
     var s = d.createElement("script");
     s.id = "cen-tour-js";
     s.textContent = __MOTOR__;
@@ -302,45 +304,37 @@ def desde_bg(nombre: str, resultado) -> pd.DataFrame | None:
     return r.value if r is not None else None
 
 
-def tabla_html(df: pd.DataFrame, alto: int = 420, anchos: dict[str, str] | None = None) -> None:
-    """Tabla con el texto completo (ajuste de línea) y desplazamiento interno, para columnas largas
-    (descripciones de trabajos, motivos) que ``st.dataframe`` corta. ``anchos``: columna -> ancho CSS."""
-    import html as _html
-    LARGO_MAX = 350
-    anchos = anchos or {}
-    cab = "".join(f'<th style="width:{anchos.get(c, "auto")}">{_html.escape(str(c))}</th>' for c in df.columns)
-    filas = []
-    for _, r in df.iterrows():
-        celdas = []
-        for c in df.columns:
-            v = r[c]
-            txt = "—" if v is None or (isinstance(v, float) and pd.isna(v)) or v == "" else str(v)
-            if len(txt) > LARGO_MAX:  # textos muy largos: primera parte + "ver más" desplegable
-                corte = txt.rfind(" ", 0, LARGO_MAX)
-                corte = corte if corte > 0 else LARGO_MAX
-                celdas.append(f"<td>{_html.escape(txt[:corte])}<details><summary>ver más</summary>"
-                              f"{_html.escape(txt[corte:])}</details></td>")
-            else:
-                celdas.append(f"<td>{_html.escape(txt)}</td>")
-        filas.append("<tr>" + "".join(celdas) + "</tr>")
-    st.markdown(
-        f'''<div class="tabla-texto" style="max-height:{alto}px"><table><thead><tr>{cab}</tr></thead>
-        <tbody>{"".join(filas)}</tbody></table></div>''', unsafe_allow_html=True)
+def tabla(df: pd.DataFrame, cols: list, alto: int | None = None, tour: str | None = None, donde=None) -> None:
+    """Tabla con estilo (cen/tablas.py). ``tour``: contenedor ``tour_<tour>`` que el recorrido enmarca.
+    ``donde``: contenedor/columna de Streamlit donde dibujarla (por defecto, el actual)."""
+    destino = donde if donde is not None else st
+    html_t = TB.tabla_html(df, cols, alto=alto)
+    if tour:
+        destino.container(key=f"tour_{tour}").markdown(html_t, unsafe_allow_html=True)
+    else:
+        destino.markdown(html_t, unsafe_allow_html=True)
 
 
-st.markdown("""
-<style>
-.tabla-texto{overflow:auto;border:1px solid rgba(128,128,128,.25);border-radius:8px;margin-bottom:6px}
-.tabla-texto table{width:100%;border-collapse:collapse;font-size:.82rem;table-layout:fixed}
-.tabla-texto th{position:sticky;top:0;background:var(--background-color,#fff);text-align:left;font-weight:600;
-  padding:6px 8px;border-bottom:1px solid rgba(128,128,128,.3);opacity:.85}
-.tabla-texto td{padding:6px 8px;border-bottom:1px solid rgba(128,128,128,.12);vertical-align:top;
-  white-space:normal;overflow-wrap:break-word;word-break:normal;hyphens:auto;line-height:1.35}
-.tabla-texto details{display:inline}
-.tabla-texto summary{display:inline;cursor:pointer;color:#1F5FA8;font-weight:600;margin-left:4px;list-style:none}
-.tabla-texto summary::-webkit-details-marker{display:none}
-.tabla-texto details[open] summary{display:none}
-</style>""", unsafe_allow_html=True)
+st.markdown(TB.CSS, unsafe_allow_html=True)
+Col = TB.Col
+
+
+def resumen_cmg_tabla(df: pd.DataFrame) -> pd.DataFrame:
+    """Mínimo, máximo, promedio y último CMg por barra, con nombres cortos y el rango del día."""
+    r = T.resumen_cmg(df, col_cmg)
+    if not r.empty:
+        r["barra"] = r["barra"].map(T.nombre_corto)
+        r["rango"] = r["máx"] - r["mín"]
+    return r
+
+
+def cols_resumen_cmg() -> list:
+    dec = 2 if moneda == "USD/MWh" else 3
+    return [Col("barra", "Barra"),
+            Col("mín", "Mínimo", "num", dec=dec, unidad=moneda), Col("máx", "Máximo", "num", dec=dec, unidad=moneda),
+            Col("promedio", "Promedio", "barra", dec=dec, unidad=moneda),
+            Col("rango", "Máx − mín", "barra", dec=dec, unidad=moneda, color_barra="#F28E5C"),
+            Col("último", "Último", "num", dec=dec, unidad=moneda)]
 
 
 def grafico(opciones: dict, height: str, key: str, tour: str | None = None) -> None:
@@ -651,23 +645,26 @@ if tab_bat.open:
         st.caption("Spread = CMg máximo − CMg mínimo del día: el margen bruto que capturaría una batería que carga "
                    "en la hora más barata y descarga en la más cara (antes de pérdidas y límites de energía). "
                    + (f"Hoy se calcula con los datos hasta las {cmg_dia['ts'].max():%H:%M}." if ES_HOY else ""))
-        tabla = pd.DataFrame({
-            "Barra": sp_dia["barra_transf"].map(nombres),
-            "CMg mín": sp_dia["min"].round(1),
-            "Hora mín": pd.to_datetime(sp_dia["ts_min"]).dt.strftime("%H:%M"),
-            "CMg máx": sp_dia["max"].round(1),
-            "Hora máx": pd.to_datetime(sp_dia["ts_max"]).dt.strftime("%H:%M"),
-            "Spread": sp_dia["spread"].round(1),
-            f"Spread prom. {E.DIAS_HISTORIAL} días": pd.to_numeric(sp_dia["barra_transf"].map(prom["spread"]),
-                                                                  errors="coerce").round(1),
-            "Horas CMg ≈ 0": sp_dia["horas_cero"].round(2),
-            f"Horas ≈ 0 prom. {E.DIAS_HISTORIAL} días": pd.to_numeric(sp_dia["barra_transf"].map(prom["horas_cero"]),
-                                                                    errors="coerce").round(1),
+        t_spread = pd.DataFrame({
+            "barra": sp_dia["barra_transf"].map(nombres),
+            "min": sp_dia["min"], "h_min": pd.to_datetime(sp_dia["ts_min"]).dt.strftime("%H:%M"),
+            "max": sp_dia["max"], "h_max": pd.to_datetime(sp_dia["ts_max"]).dt.strftime("%H:%M"),
+            "spread": sp_dia["spread"],
+            "spread_7d": pd.to_numeric(sp_dia["barra_transf"].map(prom["spread"]), errors="coerce"),
+            "cero": sp_dia["horas_cero"],
+            "cero_7d": pd.to_numeric(sp_dia["barra_transf"].map(prom["horas_cero"]), errors="coerce"),
         })
-        with st.container(key="tour_bat_spread"):
-            st.dataframe(tabla, hide_index=True, width="stretch", column_config={
-                "Spread": st.column_config.ProgressColumn("Spread (USD/MWh)", format="%.1f", min_value=0,
-                                                          max_value=float(max(tabla["Spread"].max(), 1)))})
+        t_spread["dif"] = t_spread["spread"] - t_spread["spread_7d"]
+        tabla(t_spread, [
+            Col("barra", "Barra"),
+            Col("min", "CMg mín", "num", dec=1, unidad="USD/MWh"), Col("h_min", "Hora"),
+            Col("max", "CMg máx", "num", dec=1, unidad="USD/MWh"), Col("h_max", "Hora"),
+            Col("spread", "Spread", "barra", dec=1, unidad="USD/MWh", color_barra="#F28E5C"),
+            Col("spread_7d", "Prom. 7 días", "num", dec=1, unidad="USD/MWh"),
+            Col("dif", "vs. 7 días", "delta", dec=1),
+            Col("cero", "Horas CMg ≈ 0", "barra", dec=2, unidad="h", color_barra="#5BC0F0"),
+            Col("cero_7d", "Prom. 7 días", "num", dec=1, unidad="h"),
+        ], tour="bat_spread")
         if est_hist.activo:
             st.progress(est_hist.hechos / max(est_hist.total, 1),
                         text=f"Descargando el historial de {E.DIAS_HISTORIAL} días en segundo plano: "
@@ -755,21 +752,22 @@ if tab_bat.open:
             if ins.empty:
                 st.info("Sin instrucciones a sistemas de almacenamiento ese día.")
             else:
-                c1, c2 = st.columns([2, 3])
-                with c1:
-                    por_central = (ins.groupby("central").agg(instrucciones=("ts", "size"),
-                                                              despacho_max_mw=("despacho_mw", "max"))
-                                   .sort_values("instrucciones", ascending=False).reset_index())
-                    st.dataframe(por_central.rename(columns={"central": "Sistema", "instrucciones": "Instrucciones",
-                                                             "despacho_max_mw": "Máx MW"}),
-                                 hide_index=True, width="stretch", height=360)
-                with c2:
-                    tabla_html(ins.assign(Hora=ins["ts"].dt.strftime("%H:%M"))[
-                                   ["Hora", "central", "consigna", "despacho_mw", "motivo"]]
-                               .rename(columns={"central": "Sistema", "consigna": "Consigna",
-                                                "despacho_mw": "Despacho (MW)", "motivo": "Motivo"}),
-                               alto=360, anchos={"Hora": "11%", "Sistema": "37%", "Consigna": "12%",
-                                                 "Despacho (MW)": "15%", "Motivo": "25%"})
+                c1, c2 = st.container(key="tour_bat_bess_tablas").columns([2, 3])
+                por_central = (ins.groupby("central").agg(instrucciones=("ts", "size"),
+                                                          despacho_max_mw=("despacho_mw", "max"))
+                               .sort_values("instrucciones", ascending=False).reset_index())
+                tabla(por_central, [
+                    Col("central", "Sistema"),
+                    Col("instrucciones", "Instrucciones", "barra", color_barra="#9B6BCF"),
+                    Col("despacho_max_mw", "Despacho máx.", "num", dec=1, unidad="MW"),
+                ], alto=380, donde=c1)
+                detalle = ins.assign(hora=ins["ts"].dt.strftime("%H:%M"),
+                                     accion_txt=ins["accion"].fillna(ins["motivo"]))
+                tabla(detalle, [
+                    Col("hora", "Hora"), Col("central", "Sistema"), Col("consigna", "Consigna"),
+                    Col("despacho_mw", "Despacho", "num", dec=1, unidad="MW"),
+                    Col("accion_txt", "Acción", "badge", colores=TB.COLORES_ACCION),
+                ], alto=380, donde=c2)
                 # ¿a qué horas el CEN ordena cargar y descargar? (comparable con el mapa de CMg ≈ 0)
                 inicio = ins[ins["accion"].isin(["Comienza carga", "Comienza descarga"])]
                 if not inicio.empty:
@@ -805,7 +803,7 @@ if tab_cmg.open:
             if barras:
                 st.subheader(f"Resumen ({DIA:%d-%m-%Y})")
                 del_dia = cmg[(cmg["ts"] >= pd.Timestamp(DIA)) & (cmg["ts"] < pd.Timestamp(DIA_SIG))]
-                st.dataframe(T.resumen_cmg(del_dia, col_cmg), width="stretch", hide_index=True)
+                tabla(resumen_cmg_tabla(del_dia), cols_resumen_cmg(), tour="cmg_resumen")
     else:
         c1, c2, c3 = st.columns([2, 1, 1])
         rango = c1.date_input("Rango", value=(HOY - timedelta(days=37), HOY - timedelta(days=30)),
@@ -830,7 +828,7 @@ if tab_cmg.open:
                 else:
                     hist["serie"] = hist["barra_transf"].map(CH.nombre_serie)
                     st_echarts(CH.opciones_cmg(hist, col_cmg, moneda), height="520px", key="cmg_hist")
-                    st.dataframe(T.resumen_cmg(hist, col_cmg), width="stretch", hide_index=True)
+                    tabla(resumen_cmg_tabla(hist), cols_resumen_cmg())
 
 # ============================================================== Pestaña Generación
 if tab_gen.open:
@@ -875,13 +873,14 @@ if tab_gen.open:
             grafico(CH.opciones_top10(top, T.COLORES_TEC, col_e, unidad), height="440px", tour="top10",
                        key=f"top10_{col_e}")
         with c2:
-            tabla = top.rename(columns={"central": "Central", "propietario": "Empresa (propietario)",
-                                        "tecnologia": "Tecnología", col_e: unidad,
-                                        "pct": "% del total", "pct_acum": "% acumulado"})
-            tabla.index = range(1, len(tabla) + 1)
-            st.dataframe(tabla.round(1), width="stretch", height=420,
-                         column_config={"% del total": st.column_config.ProgressColumn(
-                             "% del total", format="%.1f %%", min_value=0, max_value=float(top["pct"].max() or 1))})
+            t_top = top.assign(n=range(1, len(top) + 1))
+            tabla(t_top, [
+                Col("n", "#", "num"), Col("central", "Central"), Col("propietario", "Empresa (propietario)"),
+                Col("tecnologia", "Tecnología", "tec", colores=T.COLORES_TEC),
+                Col(col_e, "Generación", "num", dec=0, unidad=unidad),
+                Col("pct", "% del total", "barra", dec=1, unidad="%", color_barra="#1F5FA8"),
+                Col("pct_acum", "% acumulado", "pct", dec=1),
+            ], tour="top10_tabla")
             st.caption("Empresa = propietario informado por el CEN. Los sistemas de almacenamiento (BESS) llegan "
                        "sin propietario; cuando su nombre es «SAE <central>» se muestra el dueño de esa central, "
                        "marcado con *.")
@@ -898,7 +897,7 @@ if tab_gen.open:
         # ---------------- contexto: factor de planta, embalses, acumulados y programado vs real
         st.divider()
         c1, c2 = st.columns(2, gap="large")
-        with c1:
+        with c1.container(key="tour_factor"):
             st.subheader("Factor de planta del día")
             cap = desde_bg("capacidad instalada", E.capacidad_bg())
             if cap is not None and not cap.empty:
@@ -906,9 +905,14 @@ if tab_gen.open:
                 st_echarts(CH.opciones_barras_agrupadas(
                     list(fp["tecnologia"]), {"Factor de planta": list(fp["factor_pct"])},
                     {"Factor de planta": "#1F5FA8"}, "%", nombre_png="factor_planta"), height="300px", key="gen_fp")
-                st.dataframe(fp.rename(columns={"tecnologia": "Tecnología", "gen_media_mw": "Gen. media (MW)",
-                                                "capacidad_mw": "Capacidad (MW)", "factor_pct": "Factor (%)",
-                                                "horas": "Horas"}).round(1), hide_index=True, width="stretch")
+                tabla(fp, [
+                    Col("tecnologia", "Tecnología", "tec", colores=T.COLORES_TEC),
+                    Col("gen_media_mw", "Gen. media", "num", unidad="MW"),
+                    Col("capacidad_mw", "Capacidad", "num", unidad="MW"),
+                    Col("factor_pct", "Factor de planta", "barra", dec=1, unidad="%", maximo=100,
+                        color_barra="#1F5FA8"),
+                    Col("horas", "Horas", "num"),
+                ])
                 g_usada = gen_hoy if ult_gen is None else gen_hoy[gen_hoy["ts"] <= ult_gen]
                 h_ini, h_fin = g_usada["ts"].min(), g_usada["ts"].max()
                 aviso_sol = (" Aún no hay horas de sol con datos: el factor solar sale ~0 y no es representativo."
@@ -917,34 +921,38 @@ if tab_gen.open:
                            f"({g_usada['ts'].nunique()} h).{aviso_sol} Generación media ÷ potencia neta efectiva "
                            "instalada (unidades generadoras del CEN, incluye unidades en revisión). Sin BESS: no "
                            "figuran como unidades generadoras.")
-        with c2:
+        with c2.container(key="tour_embalses"):
             st.subheader("Embalses")
             emb = desde_bg("cota de embalses", E.embalses_bg())
             if emb is not None and not emb.empty:
-                st.dataframe(emb.assign(Fecha=emb["fecha"].dt.strftime("%d-%m %H:%M"))[
-                                 ["embalse", "pct", "cota", "cota_min", "cota_max", "Fecha"]]
-                             .rename(columns={"embalse": "Embalse", "pct": "Llenado", "cota": "Cota (msnm)",
-                                              "cota_min": "Mín", "cota_max": "Máx"}),
-                             hide_index=True, width="stretch", height=390,
-                             column_config={"Llenado": st.column_config.ProgressColumn(
-                                 "Llenado", format="%.0f %%", min_value=0, max_value=100)})
+                tabla(emb, [
+                    Col("embalse", "Embalse"),
+                    Col("pct", "Llenado", "barra", dec=0, unidad="%", maximo=100, color_barra="#1F5FA8"),
+                    Col("cota", "Cota", "num", dec=1, unidad="msnm"),
+                    Col("cota_min", "Mín", "num", dec=1, unidad="msnm"),
+                    Col("cota_max", "Máx", "num", dec=1, unidad="msnm"),
+                ])
+                st.caption(f"Medición del {emb['fecha'].max():%d-%m %H:%M}. Llenado = posición de la cota entre "
+                           "el mínimo y el máximo de operación.")
 
         dia_rep = DIA_ANT if ES_HOY else DIA
         st.subheader(f"Generación acumulada por tecnología — reporte del CEN al {dia_rep:%d-%m-%Y}")
         rep_gen = desde_bg("reporte de generación", E.reporte_generacion_bg(dia_rep))
         if rep_gen is not None and not rep_gen.empty:
             tot = rep_gen[["dia_gwh", "mes_gwh", "anio_gwh"]].sum()
-            st.dataframe(rep_gen.assign(pct_anio=rep_gen["anio_gwh"] / tot["anio_gwh"] * 100)[
-                             ["tecnologia", "dia_gwh", "mes_gwh", "anio_gwh", "pct_anio"]]
-                         .rename(columns={"tecnologia": "Tecnología", "dia_gwh": "Día (GWh)",
-                                          "mes_gwh": "Mes a la fecha (GWh)", "anio_gwh": "Año a la fecha (GWh)",
-                                          "pct_anio": "% del año"}).round(1),
-                         hide_index=True, width="stretch")
+            tabla(rep_gen.assign(pct_anio=rep_gen["anio_gwh"] / tot["anio_gwh"] * 100), [
+                Col("tecnologia", "Tecnología", "tec", colores=T.COLORES_TEC),
+                Col("dia_gwh", "Día", "num", dec=1, unidad="GWh"),
+                Col("mes_gwh", "Mes a la fecha", "num", dec=1, unidad="GWh"),
+                Col("anio_gwh", "Año a la fecha", "num", dec=0, unidad="GWh"),
+                Col("pct_anio", "Participación en el año", "barra", dec=1, unidad="%", color_barra="#3CB89A"),
+            ], tour="reporte")
             st.caption(f"Total del año a la fecha: {tot['anio_gwh']:,.0f} GWh. Fuente: servicio Operación del CEN "
                        "(se publica con ~1 día de atraso).")
 
-        st.subheader(f"Programado vs real por tecnología — {DIA:%d-%m-%Y}")
-        if st.checkbox("Comparar con la generación programada (PCP)", key="gen_prog_chk",
+        _gp_sec = st.container(key="tour_gen_prog")  # título y casilla (lo que enmarca el recorrido)
+        _gp_sec.subheader(f"Programado vs real por tecnología — {DIA:%d-%m-%Y}")
+        if _gp_sec.checkbox("Comparar con la generación programada (PCP)", key="gen_prog_chk",
                        help="Usa el programa de generación del CEN: descarga pesada (~60 consultas) en segundo "
                             "plano, guardada 12 h. Es la misma que usa el pronóstico solar/eólico de Baterías."):
             gp = desde_bg("programa de generación", E.erv_programada_bg(DIA))
@@ -967,13 +975,14 @@ if tab_gen.open:
                         list(tot.index), {"Programado": list(tot["programado"]), "Real": list(tot["real"])},
                         {"Programado": "#9AA5B1", "Real": "#1F5FA8"}, "MWh", nombre_png="programado_vs_real"),
                         height="340px", key="gen_prog_real")
-                    tabla_dv = tot.reset_index().round(1)
-                    # sin programa (0 MWh) el % no aplica: "—" en vez de "None"
-                    tabla_dv["desv_pct"] = tabla_dv["desv_pct"].map(lambda v: "—" if pd.isna(v) else f"{v:+.1f} %")
-                    st.dataframe(tabla_dv.rename(columns={
-                        "tecnologia": "Tecnología", "programado": "Programado (MWh)", "real": "Real (MWh)",
-                        "desv_mw": "Desviación (MWh)", "desv_pct": "Desviación (%)"}),
-                        hide_index=True, width="stretch")
+                    # sin programa (0 MWh) el % no aplica: la celda muestra «—»
+                    tabla(tot.reset_index(), [
+                        Col("tecnologia", "Tecnología", "tec", colores=T.COLORES_TEC),
+                        Col("programado", "Programado", "num", unidad="MWh"),
+                        Col("real", "Real", "num", unidad="MWh"),
+                        Col("desv_mw", "Desviación (MWh)", "delta"),
+                        Col("desv_pct", "Desviación (%)", "delta", dec=1),
+                    ])
                     st.caption(f"Suma de las {dv['ts'].nunique()} horas con generación real"
                                + (f" (hasta las {ult_gen:%H:%M})" if ES_HOY and ult_gen is not None else "")
                                + ". Desviación = real − programado.")
@@ -1023,10 +1032,11 @@ if tab_dem.open:
         grafico(CH.opciones_demanda(series_dem), height="500px", key="demanda", tour="demanda")
         st.caption(NOTA_DEMANDA)
 
-        st.subheader(f"Desviación programado vs real — {DIA:%d-%m-%Y}")
-        fuente_prog = st.radio("Programa", ["PCP (día anterior)", "PID (intradiario)"], horizontal=True,
-                               key="dem_desv_fuente", label_visibility="collapsed")
-        if st.checkbox("Calcular desviación", key="dem_desv_chk",
+        _dv_sec = st.container(key="tour_dem_desv")  # título, programa y casilla (lo que enmarca el recorrido)
+        _dv_sec.subheader(f"Desviación programado vs real — {DIA:%d-%m-%Y}")
+        fuente_prog = _dv_sec.radio("Programa", ["PCP (día anterior)", "PID (intradiario)"], horizontal=True,
+                                    key="dem_desv_fuente", label_visibility="collapsed")
+        if _dv_sec.checkbox("Calcular desviación", key="dem_desv_chk",
                        help="Compara la demanda real (generación bruta oficial, completada con la estimación) con "
                             "la demanda programada por el CEN para el mismo día."):
             prog = desde_bg("demanda programada", E.demanda_prog_bg(DIA) if fuente_prog.startswith("PCP")
@@ -1044,11 +1054,13 @@ if tab_dem.open:
                     peor = dv.loc[dv["desv_mw"].abs().idxmax()]
                     m3.metric("Mayor desviación", f"{peor['desv_mw']:+,.0f} MW", f"a las {peor['ts']:%H:%M}",
                               delta_color="off")
-                    st.dataframe(dv.assign(Hora=dv["ts"].dt.strftime("%H:%M"))[
-                                     ["Hora", "programado", "real", "desv_mw", "desv_pct"]]
-                                 .rename(columns={"programado": "Programado (MW)", "real": "Real (MWh)",
-                                                  "desv_mw": "Desviación (MW)", "desv_pct": "Desviación (%)"})
-                                 .round(1), hide_index=True, width="stretch", height=300)
+                    tabla(dv.assign(hora=dv["ts"].dt.strftime("%H:%M")), [
+                        Col("hora", "Hora"),
+                        Col("programado", "Programado", "num", unidad="MW"),
+                        Col("real", "Real", "num", unidad="MWh"),
+                        Col("desv_mw", "Desviación (MW)", "delta"),
+                        Col("desv_pct", "Desviación (%)", "delta", dec=1),
+                    ], alto=320)
                     st.caption("Real = generación bruta horaria (incluye pérdidas y consumos propios), por lo que "
                                "suele quedar algo sobre la demanda programada por barra.")
 
@@ -1064,19 +1076,21 @@ if tab_op.open:
             resumen_sc = (sc.groupby("servicio").agg(activaciones=("inicio", "size"), baja_mw=("baja_mw", "sum"),
                                                      sube_mw=("sube_mw", "sum"), unidades=("unidad", "nunique"))
                           .sort_values("activaciones", ascending=False).reset_index())
-            c1, c2 = st.columns([2, 3])
-            c1.dataframe(resumen_sc.rename(columns={"servicio": "Servicio", "activaciones": "Activaciones",
-                                                    "baja_mw": "Baja (MW)", "sube_mw": "Sube (MW)",
-                                                    "unidades": "Unidades"}).round(1),
-                         hide_index=True, width="stretch", height=360)
-            with c2:
-                tabla_html(sc.assign(Hora=sc["inicio"].dt.strftime("%H:%M") + "–" + sc["fin"].dt.strftime("%H:%M"),
-                                     Baja=sc["baja_mw"].round(1), Sube=sc["sube_mw"].round(1))[
-                               ["Hora", "servicio", "unidad", "Baja", "Sube", "motivo"]]
-                           .rename(columns={"servicio": "Servicio", "unidad": "Unidad", "Baja": "Baja (MW)",
-                                            "Sube": "Sube (MW)", "motivo": "Motivo"}),
-                           alto=360, anchos={"Hora": "14%", "Servicio": "11%", "Unidad": "18%", "Baja (MW)": "9%",
-                                             "Sube (MW)": "9%", "Motivo": "39%"})
+            # servicio «(+)» sube la generación (verde) y «(-)» la baja (rojo)
+            col_serv = {s: (TB.VERDE if "+" in str(s) else TB.ROJO if "-" in str(s) else TB.GRIS)
+                        for s in sc["servicio"].dropna().unique()}
+            c1, c2 = st.container(key="tour_op_sscc").columns([2, 3])
+            tabla(resumen_sc, [
+                Col("servicio", "Servicio", "badge", colores=col_serv),
+                Col("activaciones", "Activaciones", "barra", color_barra="#9B6BCF"),
+                Col("baja_mw", "Baja", "num", dec=1, unidad="MW"), Col("sube_mw", "Sube", "num", dec=1, unidad="MW"),
+                Col("unidades", "Unidades", "num"),
+            ], alto=380, donde=c1)
+            tabla(sc.assign(hora=sc["inicio"].dt.strftime("%H:%M") + "–" + sc["fin"].dt.strftime("%H:%M")), [
+                Col("hora", "Hora"), Col("servicio", "Servicio", "badge", colores=col_serv), Col("unidad", "Unidad"),
+                Col("baja_mw", "Baja", "num", dec=1, unidad="MW"), Col("sube_mw", "Sube", "num", dec=1, unidad="MW"),
+                Col("motivo", "Motivo", "largo"),
+            ], alto=380, donde=c2)
             st.caption(f"{len(sc)} activaciones reales (control de frecuencia CPF/CSF/CTF y otros). "
                        "Fuente: servicio Operación del CEN (OpReal).")
 
@@ -1087,13 +1101,13 @@ if tab_op.open:
         if act.empty:
             st.info("Sin mantenimientos mayores vigentes ese día.")
         else:
-            tabla_html(act.assign(Periodo=act["inicio"].dt.strftime("%d-%m") + " → " + act["fin"].dt.strftime("%d-%m"),
-                                  Instalacion=act["instalacion"].fillna("") + " · " + act["elemento"].fillna(""))[
-                           ["Periodo", "Instalacion", "estado", "riesgo", "consumos", "descripcion"]]
-                       .rename(columns={"Instalacion": "Instalación / elemento", "estado": "Estado",
-                                        "riesgo": "Riesgo", "consumos": "Consumos", "descripcion": "Trabajo"}),
-                       alto=520, anchos={"Periodo": "9%", "Instalación / elemento": "20%", "Estado": "10%",
-                                         "Riesgo": "9%", "Consumos": "12%", "Trabajo": "40%"})
+            tabla(act.assign(periodo=act["inicio"].dt.strftime("%d-%m") + " → " + act["fin"].dt.strftime("%d-%m"),
+                             inst=act["instalacion"].fillna("") + " · " + act["elemento"].fillna("")), [
+                Col("periodo", "Periodo", ancho="9%"), Col("inst", "Instalación / elemento", ancho="20%"),
+                Col("estado", "Estado", "badge", colores=TB.COLORES_ESTADO),
+                Col("riesgo", "Riesgo", "badge", colores=TB.COLORES_RIESGO),
+                Col("consumos", "Consumos", ancho="12%"), Col("descripcion", "Trabajo", "largo", ancho="40%"),
+            ], alto=520, tour="op_mant")
             st.caption(f"{len(act)} programas de mantenimiento mayor que abarcan el día (solicitados en los 60 días "
                        "previos).")
 
@@ -1105,18 +1119,20 @@ if tab_op.open:
         if act.empty:
             st.info("Sin solicitudes de trabajo que abarquen ese día.")
         else:
-            st.dataframe(act.groupby(["tipo", "elemento"]).size().rename("Solicitudes").reset_index()
-                         .sort_values("Solicitudes", ascending=False)
-                         .rename(columns={"tipo": "Tipo", "elemento": "Elemento"}),
-                         hide_index=True, width="content")
-            tabla_html(act.assign(Periodo=act["inicio"].dt.strftime("%d-%m %H:%M") + " → "
-                                  + act["fin"].dt.strftime("%d-%m %H:%M"),
-                                  Trabajo=act["tipo"].fillna("") + " · " + act["elemento"].fillna("").str.replace("_", " "),
-                                  Consumo=act["consumo"].fillna("").str.replace("_", " "))[
-                           ["Periodo", "instalacion", "Trabajo", "empresa", "estado", "Consumo"]]
-                       .rename(columns={"instalacion": "Instalación", "empresa": "Empresa", "estado": "Estado"}),
-                       alto=420, anchos={"Periodo": "17%", "Instalación": "25%", "Trabajo": "16%", "Empresa": "20%",
-                                         "Estado": "9%", "Consumo": "13%"})
+            _trab = st.container(key="tour_op_trab")
+            resumen_tr = (act.assign(elemento=act["elemento"].fillna("").str.replace("_", " "))
+                          .groupby(["tipo", "elemento"]).size().rename("n").reset_index()
+                          .sort_values("n", ascending=False))
+            c1, _ = _trab.columns([2, 3])
+            tabla(resumen_tr, [Col("tipo", "Tipo"), Col("elemento", "Elemento"),
+                               Col("n", "Solicitudes", "barra", color_barra="#F5B83D")], donde=c1)
+            tabla(act.assign(periodo=act["inicio"].dt.strftime("%d-%m %H:%M") + " → " + act["fin"].dt.strftime("%d-%m %H:%M"),
+                             trabajo=act["tipo"].fillna("") + " · " + act["elemento"].fillna("").str.replace("_", " "),
+                             consumo_txt=act["consumo"].fillna("").str.replace("_", " ")), [
+                Col("periodo", "Periodo", ancho="17%"), Col("instalacion", "Instalación", ancho="25%"),
+                Col("trabajo", "Trabajo", ancho="16%"), Col("empresa", "Empresa", ancho="20%"),
+                Col("estado", "Estado", "badge", colores=TB.COLORES_ESTADO), Col("consumo_txt", "Consumo"),
+            ], alto=420, donde=_trab)
             st.caption(f"{len(act)} solicitudes (desconexiones e intervenciones; sin anuladas, borradores ni "
                        "rechazadas) que abarcan el día, creadas en los "
                        "30 días previos.")
@@ -1125,16 +1141,34 @@ if tab_op.open:
 st.divider()
 _frescura = st.container(key="tour_frescura")
 _frescura.caption("**Frescura de los datos** · Fuente: API SIP del Coordinador Eléctrico Nacional")
+def _estado_frescura(ultimo) -> str:
+    """Etiqueta según el atraso del último dato (solo cuando se mira hoy)."""
+    if ultimo is None:
+        return "Sin fecha"
+    horas = (pd.Timestamp(datetime.now()) - pd.Timestamp(ultimo)).total_seconds() / 3600
+    if horas < 0:
+        return "Proyección"
+    if not ES_HOY:
+        return "Histórico"
+    return "Al día" if horas <= 1 else "Con atraso" if horas <= 6 else "Atraso alto"
+
+
 filas = []
 for nombre, (fetched, ultimo, nota) in FRESCURA.items():
     filas.append({
-        "Fuente": nombre,
-        "Consultado": datetime.fromtimestamp(fetched).strftime("%d-%m %H:%M") if fetched else "—",
-        "Último dato": fmt_ts(ultimo) if ultimo is not None else "—",
-        "Atraso": atraso(ultimo) if ultimo is not None else (nota or "—"),
+        "fuente": nombre,
+        "consultado": datetime.fromtimestamp(fetched).strftime("%d-%m %H:%M") if fetched else "—",
+        "ultimo": fmt_ts(ultimo) if ultimo is not None else "—",
+        "atraso": atraso(ultimo) if ultimo is not None else (nota or "—"),
+        "estado": _estado_frescura(ultimo),
     })
 if filas:
-    _frescura.dataframe(pd.DataFrame(filas), hide_index=True, width="stretch")
+    tabla(pd.DataFrame(filas), [
+        Col("fuente", "Fuente"), Col("consultado", "Consultado"), Col("ultimo", "Último dato"),
+        Col("atraso", "Atraso"),
+        Col("estado", "Estado", "badge", colores={"Al día": TB.VERDE, "Con atraso": TB.AMBAR,
+                                                  "Atraso alto": TB.ROJO, "Proyección": TB.AZUL}),
+    ], donde=_frescura)
 from cen.cache import refrescando  # noqa: E402
 
 if refrescando():

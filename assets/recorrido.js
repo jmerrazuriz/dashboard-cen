@@ -7,7 +7,7 @@
  */
 (function () {
   "use strict";
-  if (window.cenTour && window.cenTour.version === 4) return;
+  if (window.cenTour && window.cenTour.version === 5) return;
 
   var doc = document;
   var pasos = [];
@@ -106,13 +106,15 @@
     }
   }
 
-  function contenido(p, cargando) {
+  function contenido(p, cargando, sinSeccion) {
     var n = pasos.length;
     var h = '<div class="cab"><span>Paso ' + (i + 1) + " de " + n + "</span><span>Recorrido guiado</span></div>"
       + '<div class="barra"><i style="width:' + Math.round((i + 1) / n * 100) + '%"></i></div>'
       + "<h3>" + p.titulo + "</h3>"
       + '<div class="cuerpo">' + p.html
-      + (cargando ? '<p class="cargando">Cargando esta sección…</p>' : "") + "</div>"
+      + (cargando ? '<p class="cargando">Cargando esta sección…</p>' : "")
+      + (sinSeccion ? '<p class="cargando">Esta sección no tiene datos para el día elegido, por eso no se ve en '
+        + "pantalla.</p>" : "") + "</div>"
       + (p.limites ? '<div class="limites"><b class="t">Límites de los datos del Coordinador</b>' + p.limites + "</div>" : "")
       + '<div class="pie"><button class="salir" data-a="salir">Salir</button><span class="esp"></span>'
       + '<button data-a="ant"' + (i === 0 ? " disabled" : "") + ">← Anterior</button>"
@@ -184,16 +186,20 @@
     dibujar();
     abrirPestana(p.pestana);
     if (!p.objetivo) return;
-    var t0 = Date.now(), el = null;
-    while (Date.now() - t0 < 30000) {           // la pestaña puede tardar en dibujarse (datos, gráficos)
+    // Espera a que la pestaña quede activa y la sección aparezca. Si la pestaña ya está activa y la sección no
+    // aparece en ~6 s, probablemente no tiene datos ese día: el paso se muestra centrado con una nota.
+    var t0 = Date.now(), tActiva = null, el = null;
+    while (Date.now() - t0 < 25000) {
       if (mio !== token || !activo) return;
+      if (!p.pestana || pestanaActiva() === p.pestana) { if (tActiva === null) tActiva = Date.now(); }
       el = buscar(p.objetivo);
       if (el && (p.objetivo !== "@panel" || Date.now() - t0 > 1500)) break;
       el = null;
+      if (tActiva !== null && Date.now() - tActiva > 6000) break;
       await espera(250);
     }
     if (mio !== token || !activo) return;
-    contenido(p, false);
+    contenido(p, false, !el);
     if (!el) { dibujar(); return; }              // no apareció: queda centrada con el texto
     desplazarA(el);
     await espera(450);
@@ -234,7 +240,7 @@
   }
 
   window.cenTour = {
-    version: 4,
+    version: 5,
     configurar: function (p) { pasos = p || []; },
     iniciar: iniciar,
     terminar: terminar,
