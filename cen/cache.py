@@ -25,6 +25,7 @@ MIN = 60
 HOUR = 3600
 TTL = {
     "cmg_online": 15 * MIN,
+    "cmg_online_dia": None,  # un día pasado completo, por barra: no cambia
     "cmg_8b": 15 * MIN,
     "cmg_pcp": 6 * HOUR,
     "cmg_real": 24 * HOUR,
@@ -64,6 +65,10 @@ def modo_solo_cache(activo: bool) -> None:
     """Activa/desactiva el modo solo caché en el hilo actual (la página lo fija al inicio de cada
     ejecución, así un rerun interrumpido nunca lo deja activado por error)."""
     _local.solo = activo
+
+
+def solo_cache_activo() -> bool:
+    return bool(getattr(_local, "solo", False))
 
 
 class solo_cache:
@@ -124,6 +129,11 @@ def _store(pq: Path, js: Path, value: Any) -> None:
     other = js if target is pq else pq
     if other.exists():
         other.unlink()
+
+
+def guardar(namespace: str, key: str, value: Any) -> None:
+    """Guarda un valor en la caché (p. ej. cada día de una consulta que trajo varios)."""
+    _store(_path(namespace, key, "parquet"), _path(namespace, key, "json"), value)
 
 
 # Actualizaciones en segundo plano en curso (namespace, key) -> hilo

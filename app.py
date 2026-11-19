@@ -65,6 +65,7 @@ for _nombre in _MODULOS_CEN:  # marca de carga de los módulos recién importado
         sys.modules[_nombre]._cargado_en = time.time()
 
 modo_solo_cache(False)  # cada ejecución parte consultando normalmente (ver precarga más abajo)
+
 from streamlit_echarts import st_echarts  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -162,7 +163,7 @@ try:
 except ImportError:  # pragma: no cover
     pass
 
-# Descargas en segundo plano aún en curso (si hay, la página se refresca cada 30 s)
+# Descargas en segundo plano aún en curso (si hay, la página se refresca cada 15 s)
 PENDIENTES: list[str] = []
 
 # Estado de frescura de cada fuente: nombre -> (fetched_at epoch, último dato, nota)
@@ -276,7 +277,7 @@ PCP_DIA = DIA_SIG if ES_HOY else DIA  # hoy: programa de mañana; pasado: lo pro
 # ============================================================== precarga de días pasados
 # La primera vez que se abre un día pasado sus datos se descargan en segundo plano (varios minutos por
 # el límite de la API). Mientras tanto la página no consulta la API: muestra lo que ya está guardado y
-# se actualiza sola cada 30 s hasta completar.
+# se actualiza sola cada 15 s hasta completar.
 CARGANDO_DIA = False
 E.marcar_dia_activo(DIA)  # las consultas de este día pasan antes que las de días que ya no se miran
 if not ES_HOY:
@@ -371,8 +372,12 @@ registrar("Demanda (gen. bruta)", dem_r.fetched_at if dem_r else None,
 
 cmg = T.cmg_df([])
 if barras:
-    with st.spinner(f"Consultando CMg en línea de {len(barras)} barra(s)…"):
-        cmg, cmg_fetched, cmg_err = E.cmg_online_multi(barras, DIA_ANT, DIA, force=force)
+    # no espera a la API: las barras recién agregadas se descargan en segundo plano y aparecen solas
+    cmg, cmg_fetched, cmg_err, cmg_pend = E.cmg_online_multi(barras, DIA_ANT, DIA, force=force)
+    if cmg_pend and not CARGANDO_DIA:
+        PENDIENTES.append("CMg de " + ", ".join(CH.nombre_serie(b) for b in cmg_pend))
+    elif E.cmg_actualizando() and not CARGANDO_DIA:
+        PENDIENTES.append("actualizando el CMg en línea")
     for e in cmg_err:
         if "Autenticación rechazada" in e:
             avisar_auth(e)
@@ -1176,7 +1181,7 @@ if refrescando():
     PENDIENTES.append(f"actualizando {len(refrescando())} fuente(s); se muestran los datos anteriores")
 if PENDIENTES:
     try:
-        st_autorefresh(interval=30_000, key="bg_refresh")
+        st_autorefresh(interval=15_000, key="bg_refresh")  # cada rerun es liviano: no espera a la API
     except NameError:  # pragma: no cover
         pass
     st.caption("En segundo plano: " + ", ".join(PENDIENTES) + " (la página se actualizará sola).")

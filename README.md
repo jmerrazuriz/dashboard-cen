@@ -32,7 +32,8 @@ Requiere `.env` con `CEN_USER_KEY=...`. Opcional: `CEN_MIN_INTERVAL` (pausa mín
 ## Días pasados
 
 - Selector de fecha en la barra lateral (desde 01-01-2026) y botón **Hoy** para volver.
-- La primera vez que se abre un día pasado sus datos (generación, demanda, mix y una consulta por barra) se descargan **en segundo plano** con barra de progreso; la página muestra lo que ya está listo y se actualiza sola cada 30 s. Las fuentes que fallan (casi siempre 429) se reintentan una vez tras 20 s. Lo descargado queda en caché: cambiar de día o volver a hoy no pierde avance.
+- La primera vez que se abre un día pasado sus datos (generación, demanda, mix y una consulta por barra) se descargan **en segundo plano** con barra de progreso; la página muestra lo que ya está listo y se actualiza sola cada 15 s. Las fuentes que fallan (casi siempre 429) se reintentan una vez tras 20 s. Lo descargado queda en caché: cambiar de día o volver a hoy no pierde avance.
+- Al agregar barras, solo se descargan las nuevas (en segundo plano: la página no se queda opaca esperando); el CMg se guarda por barra y por día, y una consulta trae el día y los 7 anteriores.
 - En días pasados la línea discontinua del CMg es lo que **se programó para ese mismo día** (para comparar con lo ocurrido); hoy, el programa de mañana.
 
 ## Ampliación (fases 1–4)
